@@ -27,12 +27,11 @@
           :value="item.value"
         />
       </el-select>
-
       <el-button
         type="primary"
         style="margin-left: 20px"
         @click="handleDownload"
-      >业绩详情下载</el-button>
+      >业绩下载</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -62,6 +61,23 @@
 
 <script>
 import { rankDetailList, rankDetailDownload } from '@/api/achieve'
+
+const download = (fileStream, filename = '业绩明细') => {
+  const blob = new Blob([fileStream], {
+    // type值如后台设置，前端可省略，具体type值可参考https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+  const downloadElement = document.createElement('a') // 创建a标签
+  const href = window.URL.createObjectURL(blob) // 创建DOMString
+  // 设置文件名字
+  downloadElement.style.display = 'none' // 隐藏a标签
+  downloadElement.href = href // 赋值a标签的href
+  downloadElement.download = filename // 下载后文件名
+  document.body.appendChild(downloadElement) // 插入a标签
+  downloadElement.click() // 点击下载
+  document.body.removeChild(downloadElement) // 下载完成移除元素
+  window.URL.revokeObjectURL(href) // 释放掉blob对象
+}
 
 export default {
   data() {
@@ -107,7 +123,7 @@ export default {
         this.tableList = []
       })
     },
-    handleDownload() {
+    async handleDownload() {
       const { page, size } = this.pagination
       rankDetailDownload({
         page,
@@ -115,6 +131,7 @@ export default {
         time: this.time,
         dimension: this.dimension
       }).then(response => {
+        download(response)
       })
     },
     handledimension() {

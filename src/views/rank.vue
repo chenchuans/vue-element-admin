@@ -61,9 +61,8 @@
 
 <script>
 import { rankList, rankDownload } from '@/api/achieve'
-import FileSaver from 'file-saver'
 
-const download = (fileStream, filename = '测试下载') => {
+const download = (fileStream, filename = '业绩') => {
   const blob = new Blob([fileStream], {
     // type值如后台设置，前端可省略，具体type值可参考https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -71,7 +70,6 @@ const download = (fileStream, filename = '测试下载') => {
   const downloadElement = document.createElement('a') // 创建a标签
   const href = window.URL.createObjectURL(blob) // 创建DOMString
   // 设置文件名字
-  console.log('blob', blob, fileStream)
   downloadElement.style.display = 'none' // 隐藏a标签
   downloadElement.href = href // 赋值a标签的href
   downloadElement.download = filename // 下载后文件名
@@ -133,8 +131,7 @@ export default {
         time: this.time,
         dimension: this.dimension
       }).then(response => {
-        // download(response)
-        FileSaver.saveAs(response, 'ceshi')
+        download(response)
       })
     },
     handledimension() {
