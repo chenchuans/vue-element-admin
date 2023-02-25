@@ -82,6 +82,7 @@
 
 <script>
 import { getAchieveInfo, listAchieve, updateAchieve } from '@/api/achieve'
+import { getNowFormatDate } from '@/utils/tool'
 
 export default {
   data() {
@@ -161,21 +162,6 @@ export default {
     })
   },
   methods: {
-    getNowFormatDate(da) {
-      var date = new Date(da)
-      var seperator1 = '-'
-      var year = date.getFullYear()
-      var month = date.getMonth() + 1
-      var strDate = date.getDate()
-      if (month >= 1 && month <= 9) {
-        month = '0' + month
-      }
-      if (strDate >= 0 && strDate <= 9) {
-        strDate = '0' + strDate
-      }
-      var currentdate = year + seperator1 + month + seperator1 + strDate
-      return currentdate
-    },
     fetchData() {
       this.listLoading = true
       const { page, size } = this.pagination
@@ -198,8 +184,8 @@ export default {
         size,
         deptId,
         rank,
-        startTime: this.getNowFormatDate(time[0]),
-        endTime: this.getNowFormatDate(time[1])
+        startTime: getNowFormatDate(time[0]),
+        endTime: getNowFormatDate(time[1])
       }).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total

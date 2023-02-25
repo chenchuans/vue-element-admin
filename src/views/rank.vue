@@ -27,7 +27,20 @@
           :value="item.value"
         />
       </el-select>
+      <el-date-picker
+        v-model="timeDate"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        style="margin-left: 20px"
+        @change="handleDateChange"
+      />
       <el-button
+        v-if="userRole === 'SUPER_ADMIN'"
         type="primary"
         style="margin-left: 20px"
         @click="handleDownload"
@@ -61,23 +74,7 @@
 
 <script>
 import { rankList, rankDownload } from '@/api/achieve'
-
-const download = (fileStream, filename = '业绩') => {
-  const blob = new Blob([fileStream], {
-    // type值如后台设置，前端可省略，具体type值可参考https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  })
-  const downloadElement = document.createElement('a') // 创建a标签
-  const href = window.URL.createObjectURL(blob) // 创建DOMString
-  // 设置文件名字
-  downloadElement.style.display = 'none' // 隐藏a标签
-  downloadElement.href = href // 赋值a标签的href
-  downloadElement.download = filename // 下载后文件名
-  document.body.appendChild(downloadElement) // 插入a标签
-  downloadElement.click() // 点击下载
-  document.body.removeChild(downloadElement) // 下载完成移除元素
-  window.URL.revokeObjectURL(href) // 释放掉blob对象
-}
+import { download, getNowFormatDate } from '@/utils/tool'
 
 export default {
   data() {
@@ -97,11 +94,56 @@ export default {
         { label: '小组', value: '3' },
         { label: '个人', value: '4' }
       ],
-      listLoading: false
+      listLoading: false,
+      timeDate: [],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      userRole: JSON.parse(localStorage.getItem('loginInfo') || '{}').userRole
     }
   },
   created() {
     this.pagination = JSON.parse(localStorage.getItem('loginInfo') || '{}').pagination
+    this.timeDate = [new Date(), new Date()]
     this.fetchData()
   },
   methods: {
@@ -112,6 +154,8 @@ export default {
         page,
         size,
         time: this.time,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1]),
         dimension: this.dimension
       }).then(response => {
         this.tableList = response.data.data
@@ -123,16 +167,21 @@ export default {
         this.tableList = []
       })
     },
-    async handleDownload() {
+    handleDownload() {
       const { page, size } = this.pagination
       rankDownload({
         page,
         size,
         time: this.time,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1]),
         dimension: this.dimension
       }).then(response => {
-        download(response)
+        download(response, '业绩')
       })
+    },
+    handleDateChange() {
+      this.fetchData()
     },
     handledimension() {
       this.fetchData()

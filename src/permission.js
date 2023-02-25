@@ -23,7 +23,7 @@ router.beforeEach(async(to, from, next) => {
       const jumpto = () => {
         let routeState = false
         // 业绩管理、员工管理 只有普通员工不可见
-        if (userRole === 'COMMON_USER' && (to.path.includes('/admin') || to.path.includes('/achieve'))) {
+        if (userRole === 'COMMON_USER' && (to.path.includes('/rank/detail') || to.path.includes('/admin') || to.path.includes('/achieve'))) {
           routeState = true
         }
         if (userRole !== 'SUPER_ADMIN' && to.path.includes('/depart')) {

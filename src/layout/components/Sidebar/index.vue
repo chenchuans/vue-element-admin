@@ -34,6 +34,15 @@ export default {
       const { routes } = this.$router.options
       const { userRole = '' } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
       routes.forEach(item => {
+        if (Array.isArray(item.children)) {
+          item.children.forEach(it => {
+            if (Array.isArray(it.roles) && !it.roles.includes(userRole)) {
+              it.hidden = true
+            } else {
+              it.hidden = false
+            }
+          })
+        }
         if (Array.isArray(item.roles) && !item.roles.includes(userRole)) {
           item.hidden = true
         } else {

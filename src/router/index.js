@@ -134,7 +134,8 @@ export const constantRoutes = [
         path: 'detail',
         name: '业绩明细',
         component: () => import('@/views/rankdetail'),
-        meta: { title: '业绩明细', icon: 'dashboard' }
+        meta: { title: '业绩明细', icon: 'dashboard' },
+        roles: ['SUPER_ADMIN']
       }
     ]
   },
