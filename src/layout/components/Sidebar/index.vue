@@ -12,7 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -28,9 +28,20 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'permission_routes',
       'sidebar'
     ]),
+    routes() {
+      const { routes } = this.$router.options
+      const { userRole = '' } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
+      routes.forEach(item => {
+        if (Array.isArray(item.roles) && !item.roles.includes(userRole)) {
+          item.hidden = true
+        } else {
+          item.hidden = false
+        }
+      })
+      return routes
+    },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route

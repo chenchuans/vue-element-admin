@@ -14,6 +14,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Hamburger',
   props: {
@@ -24,7 +25,8 @@ export default {
   },
   methods: {
     toggleClick() {
-      this.$emit('toggleClick')
+      this.$store.dispatch('app/toggleSideBar')
+      // this.$emit('toggleClick')
     }
   }
 }
