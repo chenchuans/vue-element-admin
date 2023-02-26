@@ -35,6 +35,11 @@
       />
       <span class="role">当前角色： {{ userMap[form.role] }}</span>
       <!-- <span class="role">总单量： {{  }}</span> -->
+      <el-button
+        type="primary"
+        style="margin-left: 30px"
+        @click="dialogVisibleAdd = true"
+      >批量添加业绩</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -77,11 +82,39 @@
         @current-change="handleCurrentChange"
       />
     </div>
+
+    <el-dialog
+      title="批量增加业绩"
+      :visible.sync="dialogVisibleAdd"
+      width="600px"
+    >
+      <el-form ref="tableAddForm" :model="tableAddForm" label-width="100px">
+        <el-form-item label="姓名">
+          <el-input
+            v-model="tableAddForm.rName"
+            type="textarea"
+            placeholder="回车换行，按行分割"
+            rows="10"
+          />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-date-picker
+            v-model="tableAddForm.rTime"
+            type="date"
+            placeholder="开始日期"
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="handleAdd">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAchieveInfo, listAchieve, updateAchieve } from '@/api/achieve'
+import { getAchieveInfo, listAchieve, updateAchieve, addAchieve } from '@/api/achieve'
 import { getNowFormatDate } from '@/utils/tool'
 
 export default {
@@ -138,6 +171,11 @@ export default {
         role: '',
         timeSelect: false
       },
+      tableAddForm: {
+        rName: '',
+        rTime: new Date()
+      },
+      dialogVisibleAdd: false,
       userMap: {
         'SUPER_ADMIN': '总监',
         'COMMON_ADMIN': '经理',
@@ -190,6 +228,16 @@ export default {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
         this.listLoading = false
+      })
+    },
+    handleAdd() {
+      const { rTime, rName } = this.tableAddForm
+      addAchieve({
+        rTime: getNowFormatDate(rTime),
+        rName: rName.split('\n')
+      }).then(response => {
+        this.dialogVisibleAdd = false
+        this.fetchData()
       })
     },
     handleSearch() {

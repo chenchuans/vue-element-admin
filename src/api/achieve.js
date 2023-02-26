@@ -18,6 +18,15 @@ export function listAchieve(data) {
   })
 }
 
+// 批量添加业绩
+export function addAchieve(data) {
+  return request({
+    url: '/back/rank/rank/add',
+    method: 'post',
+    data
+  })
+}
+
 // 修改业绩
 export function updateAchieve(data) {
   return request({

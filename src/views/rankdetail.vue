@@ -15,7 +15,7 @@
           :value="item.value"
         />
       </el-select>
-      <el-select
+      <!-- <el-select
         v-model="time"
         placeholder="请选择"
         @change="handleTime"
@@ -26,7 +26,7 @@
           :label="item.label"
           :value="item.value"
         />
-      </el-select>
+      </el-select> -->
       <el-date-picker
         v-model="timeDate"
         type="daterange"

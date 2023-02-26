@@ -108,7 +108,7 @@ export const constantRoutes = [
         meta: { title: '业绩管理', icon: 'dashboard' }
       }
     ],
-    roles: ['SUPER_ADMIN', 'COMMON_ADMIN', 'SUPER_USER']
+    roles: ['SUPER_ADMIN']
   },
 
   {
