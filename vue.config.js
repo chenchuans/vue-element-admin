@@ -37,13 +37,22 @@ module.exports = {
       errors: true
     }
   },
-  configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
-    name: name,
-    resolve: {
-      alias: {
-        '@': resolve('src')
+  configureWebpack(config) {
+    // 为生产环境修改配置...
+    config.mode = 'production';
+    // 打包文件大小配置
+    config.performance = {
+      maxEntrypointSize: 10000000,
+      maxAssetSize: 30000000
+    }
+    return {
+      // provide the app's title in webpack's name field, so that
+      // it can be accessed in index.html to inject the correct title.
+      name: name,
+      resolve: {
+        alias: {
+          '@': resolve('src')
+        }
       }
     }
   },

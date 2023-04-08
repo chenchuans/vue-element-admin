@@ -15,6 +15,7 @@
         </el-popconfirm>
         <el-button type="primary" v-if="!isNoAdmin" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
       </div>
+      <h2 class="title">每小时40通次，每小时3单+，月入4万+</h2>
       <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
         <el-button @click="handleSearch" slot="append" icon="el-icon-search" />
       </el-input>
@@ -342,9 +343,15 @@ export default {
   justify-content: space-between;
   margin-bottom: 20px;
 }
+.title {
+  line-height: 40px;
+  color: #fe3549;
+  margin: 0;
+}
 .app-container-top-left {
   display: flex;
   justify-content: space-between;
+  justify-items: center;
   width: 400px;
 }
 .input {
