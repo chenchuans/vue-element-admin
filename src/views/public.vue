@@ -36,6 +36,7 @@
         <el-select
           v-model="searchSelectId"
           placeholder="请选择负责人"
+          filterable
           clearable
           style="margin-right: 8px;"
           @change="handleSearch"
@@ -130,7 +131,12 @@
 
         </el-form-item>
         <el-form-item label="负责人">
-          <el-select v-model="tableEditForm.ownerId" placeholder="请选择负责人">
+          <el-select
+            v-model="tableEditForm.ownerId"
+            placeholder="请选择负责人"
+            clearable
+            filterable
+          >
             <el-option
               v-for="(item, index) in ownerList"
               :key="index"
@@ -173,7 +179,12 @@
           />
         </el-form-item>
         <el-form-item label="负责人">
-          <el-select v-model="tableAddForm.ownerId" placeholder="请选择负责人">
+          <el-select
+            v-model="tableAddForm.ownerId"
+            clearable
+            filterable
+            placeholder="请选择负责人"
+          >
             <el-option
               v-for="(item, index) in ownerList"
               :key="index"
@@ -196,7 +207,12 @@
     >
       <el-form ref="tableTransForm" :model="tableTransForm" label-width="80px">
         <el-form-item label="负责人">
-          <el-select v-model="tableTransForm.ownerId" placeholder="请选择负责人">
+          <el-select
+            v-model="tableTransForm.ownerId"
+            clearable
+            filterable
+            placeholder="请选择负责人"
+          >
             <el-option
               v-for="(item, index) in ownerList"
               :key="index"
