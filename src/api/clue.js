@@ -93,7 +93,7 @@ export function allDataTrans(data) {
 // 负责人下拉列表
 export function clueUsers(data) {
   return request({
-    url: '/back/clue/users',
+    url: '/back/clue/users/all',
     method: 'post',
     data
   })

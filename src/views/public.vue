@@ -15,9 +15,42 @@
         </el-popconfirm> -->
         <el-button type="primary" v-if="!isNoAdmin" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
       </div>
-      <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
+
+      <div>
+        <el-select
+          v-model="searchFlowerType"
+          placeholder="请选择跟进类型"
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            label="已跟进"
+            value="1"
+          />
+          <el-option
+            label="未跟进"
+            value="0"
+          />
+        </el-select>
+        <el-select
+          v-model="searchSelectId"
+          placeholder="请选择负责人"
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            v-for="(item, index) in ownerList"
+            :key="index"
+            :label="item.ownerName"
+            :value="item.ownerId"
+          />
+        </el-select>
+        <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
         <el-button @click="handleSearch" slot="append" icon="el-icon-search" />
       </el-input>
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
@@ -206,6 +239,8 @@ export default {
     return {
       isNoAdmin: false,
       searchKey: '',
+      searchSelectId: '',
+      searchFlowerType: '',
       dialogVisibleEdit: false,
       dialogVisibleAdd: false,
       dialogVisibleTransfer: false,
@@ -249,11 +284,21 @@ export default {
       const { pagination } = this
       const { page, size } = pagination
 
-      publicList({
+      const req = {
         page,
         size,
         phone: this.searchKey
-      }).then(response => {
+      }
+
+      if (this.searchSelectId) {
+        req.userId = this.searchSelectId
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
+      }
+
+      publicList(req).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
         this.listLoading = false

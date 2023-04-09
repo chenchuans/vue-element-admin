@@ -17,6 +17,22 @@
       </div>
       <div>
         <el-select
+          v-model="searchFlowerType"
+          placeholder="请选择跟进类型"
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            label="已跟进"
+            value="1"
+          />
+          <el-option
+            label="未跟进"
+            value="0"
+          />
+        </el-select>
+        <el-select
           v-model="searchSelectId"
           placeholder="请选择负责人"
           clearable
@@ -223,6 +239,7 @@ export default {
       isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
+      searchFlowerType: '',
       dialogVisibleEdit: false,
       dialogVisibleAdd: false,
       dialogVisibleTransfer: false,
@@ -274,6 +291,10 @@ export default {
 
       if (this.searchSelectId) {
         req.userId = this.searchSelectId
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
       }
 
       allDataList(req).then(response => {
