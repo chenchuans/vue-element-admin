@@ -76,6 +76,8 @@
 import { rankList, rankDownload } from '@/api/achieve'
 import { download, getNowFormatDate } from '@/utils/tool'
 
+const userRole = JSON.parse(localStorage.getItem('loginInfo') || '{}').userRole
+
 export default {
   data() {
     return {
@@ -95,17 +97,32 @@ export default {
         { label: '个人', value: '4' }
       ],
       listLoading: false,
+      userRole,
       timeDate: [],
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date())
+          if (userRole === 'SUPER_ADMIN') {
+            return time.getTime() > Date.now()
+          } else {
+            const data = new Date()
+            data.setDate(0)
+            data.setHours(0)
+            data.setSeconds(0)
+            data.setMinutes(0)
+            return time.getTime() > Date.now() || data > time.getTime()
           }
-        }, {
+        }
+      }
+    }
+  },
+  created() {
+    this.pagination = JSON.parse(localStorage.getItem('loginInfo') || '{}').pagination
+    this.timeDate = [new Date(), new Date()]
+    this.fetchData()
+
+    if (userRole === 'SUPER_ADMIN') {
+      this.pickerOptions.shortcuts = [
+        {
           text: '昨天',
           onClick(picker) {
             const date = new Date()
@@ -136,15 +153,9 @@ export default {
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
             picker.$emit('pick', [start, end])
           }
-        }]
-      },
-      userRole: JSON.parse(localStorage.getItem('loginInfo') || '{}').userRole
+        }
+      ]
     }
-  },
-  created() {
-    this.pagination = JSON.parse(localStorage.getItem('loginInfo') || '{}').pagination
-    this.timeDate = [new Date(), new Date()]
-    this.fetchData()
   },
   methods: {
     fetchData() {

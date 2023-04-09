@@ -45,10 +45,46 @@ export function collectList(data) {
   })
 }
 
+// 展示所有公海
+export function publicList(data) {
+  return request({
+    url: '/back/clue/public/list',
+    method: 'post',
+    data
+  })
+}
+
+// 展示所有数据
+export function allDataList(data) {
+  return request({
+    url: '/back/clue/all/list',
+    method: 'post',
+    data
+  })
+}
+
 // 线索转移
 export function clueTrans(data) {
   return request({
     url: '/back/clue/trans',
+    method: 'post',
+    data
+  })
+}
+
+// 批量公海转移
+export function publicTrans(data) {
+  return request({
+    url: '/back/clue/public/trans',
+    method: 'post',
+    data
+  })
+}
+
+// 数据池-所有数据转移
+export function allDataTrans(data) {
+  return request({
+    url: '/back/clue/public/trans',
     method: 'post',
     data
   })

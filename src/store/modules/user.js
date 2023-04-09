@@ -1,4 +1,4 @@
-import { login } from '@/api/user'
+import { login, phoneLogin } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const getDefaultState = () => {
@@ -29,9 +29,11 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, code, phone, type = 'account' } = userInfo
+
     return new Promise((resolve, reject) => {
-      login({ userName: username.trim(), passWord: password }).then(response => {
+      const req = type === 'phone' ? phoneLogin({ code, phone }) : login({ userName: username.trim(), passWord: password })
+      req.then(response => {
         const { data } = response
         const rolePagination = {
           SUPER_ADMIN: {

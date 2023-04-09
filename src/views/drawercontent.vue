@@ -9,8 +9,8 @@
       </el-form-item>
       <el-form-item label="手机号：">
         <span style="padding-right: 30px">{{ drawerInfo.phone }}</span>
-        <el-button size="small" style="margin-right: 30px" @click="handleCopy">复制</el-button>
-        <el-button size="small" @click="handlePhone">拨打手机</el-button>
+        <el-button v-show="!isShowAllButton" size="small" style="margin-right: 30px" @click="handleCopy">复制</el-button>
+        <el-button v-show="!isShowAllButton" size="small" @click="handlePhone">拨打手机</el-button>
       </el-form-item>
       <el-form-item label="负责人：">
         <span>{{ drawerInfo.ownerName }}</span>
@@ -18,7 +18,7 @@
     </el-form>
     <el-tabs v-model="activeTabName" type="card" class="tab">
       <el-tab-pane label="跟进记录" name="flower">
-        <div class="flower">
+        <div v-show="!isShowAllButton" class="flower">
           <el-input type="textarea" rows="4" v-model="flowerInput" placeholder="请输入点击按钮确认提交" />
           <div class="flower-btn">
             <el-button
@@ -48,11 +48,13 @@
           <el-table-column class-name="status-col" label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button
+                v-show="!isShowAllButton"
                 size="small"
                 @click="handleFlowerEdit(scope.row)"
                 style="margin-right: 10px"
               >编辑</el-button>
               <el-popconfirm
+                v-show="!isShowAllButton"
                 confirm-button-text="好的"
                 cancel-button-text="不用了"
                 icon="el-icon-info"
@@ -107,7 +109,8 @@ export default {
       collectStatus: 0, // 未收藏 1 已收藏
       btnText: '增加跟进记录',
       followList: [],
-      operateList: []
+      operateList: [],
+      isShowAllButton: this.$route.path.includes('public')
     }
   },
   created() {

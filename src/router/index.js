@@ -66,6 +66,29 @@ export const constantRoutes = [
   },
 
   {
+    path: '/public',
+    component: Layout,
+    redirect: '/public/index',
+    name: '数据池',
+    meta: { title: '数据池', icon: 'dashboard' },
+    children: [
+      {
+        path: 'index',
+        name: '公海列表',
+        component: () => import('@/views/public'),
+        meta: { title: '公海列表', icon: 'dashboard' },
+        roles: ['SUPER_ADMIN']
+      },
+      {
+        path: 'all',
+        name: '所有数据',
+        component: () => import('@/views/alldata'),
+        meta: { title: '所有数据', icon: 'dashboard' }
+      }
+    ]
+  },
+
+  {
     path: '/depart',
     component: Layout,
     redirect: '/depart/index',

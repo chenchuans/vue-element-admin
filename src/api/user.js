@@ -9,6 +9,24 @@ export function login(data) {
   })
 }
 
+// 手机号登录
+export function phoneLogin(data) {
+  return request({
+    url: '/front/user/code/login',
+    method: 'post',
+    data
+  })
+}
+
+// 获取手机验证码
+export function getCode(data) {
+  return request({
+    url: '/front/user/code/get',
+    method: 'post',
+    data
+  })
+}
+
 // 添加用户
 export function userAdd(data) {
   return request({

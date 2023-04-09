@@ -23,6 +23,11 @@
           {{ scope.row.passWord }}
         </template>
       </el-table-column>
+      <el-table-column label="手机号" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.userPhone }}
+        </template>
+      </el-table-column>
       <el-table-column label="中文名" align="center">
         <template slot-scope="scope">
           {{ scope.row.userCnName }}
@@ -76,6 +81,9 @@
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="formInfo.passWord" />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="formInfo.userPhone" />
         </el-form-item>
         <el-form-item label="中文名">
           <el-input v-model="formInfo.userCnName" />
@@ -172,11 +180,8 @@ export default {
       })
     },
     handleClose() {
-      const { id, passWord, userCnName, userName, userRole } = this.formInfo
       if (this.state === 'edit') {
-        userUpdate({
-          id, passWord, userCnName, userName, userRole
-        }).then(response => {
+        userUpdate(this.formInfo).then(response => {
           this.fetchData()
           this.$message({
             message: '更新成功',
@@ -185,9 +190,7 @@ export default {
           this.dialogVisible = false
         })
       } else {
-        userAdd({
-          id, passWord, userCnName, userName, userRole
-        }).then(response => {
+        userAdd(this.formInfo).then(response => {
           this.fetchData()
           this.$message({
             message: '新增成功',
