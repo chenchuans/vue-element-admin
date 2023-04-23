@@ -2,10 +2,10 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">批量添加线索</el-button>
         <el-popconfirm
-          confirm-button-text='好的'
-          cancel-button-text='不用了'
+          confirm-button-text="好的"
+          cancel-button-text="不用了"
           icon="el-icon-info"
           icon-color="red"
           title="确认要删除吗？"
@@ -13,12 +13,46 @@
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
         </el-popconfirm>
-        <el-button type="primary" v-if="!isNoAdmin" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
       </div>
       <h2 class="title">每小时40通次，每小时3单+，月入4万+</h2>
-      <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
-        <el-button @click="handleSearch" slot="append" icon="el-icon-search" />
-      </el-input>
+
+      <div>
+        <el-select
+          v-model="searchFlowerType"
+          placeholder="请选择跟进类型"
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            label="已跟进"
+            value="1"
+          />
+          <el-option
+            label="未跟进"
+            value="0"
+          />
+        </el-select>
+        <el-select
+          v-model="searchSelectId"
+          placeholder="请选择负责人"
+          filterable
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            v-for="(item, index) in ownerList"
+            :key="index"
+            :label="item.ownerName"
+            :value="item.ownerId"
+          />
+        </el-select>
+        <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
+        </el-input>
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
@@ -65,9 +99,9 @@
         <template slot-scope="scope">
           <el-button
             size="small"
-            @click="handleEdit(scope.row)"
             style="margin-right: 10px"
             :disabled="isNoAdmin"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
         </template>
       </el-table-column>
@@ -222,6 +256,8 @@ export default {
     return {
       isNoAdmin: false,
       searchKey: '',
+      searchSelectId: '',
+      searchFlowerType: '',
       dialogVisibleEdit: false,
       dialogVisibleAdd: false,
       dialogVisibleTransfer: false,
@@ -264,11 +300,21 @@ export default {
       this.listLoading = true
       const { page, size } = this.pagination
 
-      clueList({
+      const req = {
         page,
         size,
         phone: this.searchKey
-      }).then(response => {
+      }
+
+      if (this.searchSelectId) {
+        req.userId = this.searchSelectId
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
+      }
+
+      clueList(req).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
         this.listLoading = false

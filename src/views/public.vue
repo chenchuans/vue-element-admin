@@ -13,7 +13,7 @@
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
         </el-popconfirm> -->
-        <el-button type="primary" v-if="!isNoAdmin" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
       </div>
 
       <div>
@@ -48,9 +48,9 @@
             :value="item.ownerId"
           />
         </el-select>
-        <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
-        <el-button @click="handleSearch" slot="append" icon="el-icon-search" />
-      </el-input>
+        <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
+        </el-input>
       </div>
     </div>
     <el-table
@@ -244,7 +244,7 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, publicList, publicTrans, clueUsers } from '@/api/clue'
+import { clueAdd, clueDel, clueEdit, publicList, publicTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
 
 export default {
@@ -287,7 +287,7 @@ export default {
     this.isNoAdmin = userRole === 'SUPER_USER'
     this.pagination = pagination
     this.fetchData()
-    clueUsers({}).then(response => {
+    dataUsers({}).then(response => {
       this.ownerList = response.data.map(item => ({
         ownerName: item.userCnName || '暂无中文名',
         ownerId: item.id

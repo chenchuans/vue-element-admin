@@ -90,10 +90,19 @@ export function allDataTrans(data) {
   })
 }
 
-// 负责人下拉列表
-export function clueUsers(data) {
+// 数据池-负责人下拉列表
+export function dataUsers(data) {
   return request({
     url: '/back/clue/users/all',
+    method: 'post',
+    data
+  })
+}
+
+// 线索-负责人下拉列表
+export function clueUsers(data) {
+  return request({
+    url: '/back/clue/users',
     method: 'post',
     data
   })
