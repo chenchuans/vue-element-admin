@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">批量添加线索</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -13,11 +13,11 @@
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
         </el-popconfirm>
-        <el-button type="primary" v-if="!isNoAdmin" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
       </div>
       <h2 class="title">每小时40通次，每小时3单+，月入4万+</h2>
-      <el-input class="input" placeholder="请输入搜索内容" v-model="searchKey" clearable>
-        <el-button @click="handleSearch" slot="append" icon="el-icon-search" />
+      <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
     </div>
     <el-table
@@ -45,6 +45,11 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
+      <el-table-column label="剩余时间" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.remainderTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="最新跟进" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
@@ -65,9 +70,9 @@
         <template slot-scope="scope">
           <el-button
             size="small"
-            @click="handleEdit(scope.row)"
             style="margin-right: 10px"
             :disabled="isNoAdmin"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
         </template>
       </el-table-column>
@@ -95,7 +100,6 @@
         </el-form-item>
         <el-form-item label="电话号">
           <el-input v-model="tableEditForm.phone" />
-
         </el-form-item>
         <el-form-item label="负责人">
           <el-select

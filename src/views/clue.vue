@@ -79,6 +79,11 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
+      <el-table-column label="剩余时间" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.remainderTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="最新跟进" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
