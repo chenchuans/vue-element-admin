@@ -4,7 +4,7 @@ import { Message } from 'element-ui'
 // create an axios instance
 const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
-  baseURL: 'http://123.56.23.78:80/jstime', // 线上环境
+  baseURL: 'http://123.56.23.78:82/jstime', // 线上环境
   // baseURL: 'http://jstime.durl.ga:4445/jstime', // 测试环境
   // baseURL: 'http://localhost:8080/jstime', // 本地环境
   timeout: 20000 // request timeout
@@ -18,7 +18,7 @@ service.interceptors.request.use(
       config.headers['token'] = token
     }
     if (config.url.includes('/download')) {
-      config.responseType = "arraybuffer" // arraybuffer是js中提供处理二进制的接口
+      config.responseType = 'arraybuffer' // arraybuffer是js中提供处理二进制的接口
       config.headers['responseType'] = 'arraybuffer'
     }
     return config

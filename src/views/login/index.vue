@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-img">
-      <h2>嘉晟CRM</h2>
+      <h2>APP-CRM</h2>
       <img src="@/assets/login-bag.png" alt="">
     </div>
     <div class="login-form">
