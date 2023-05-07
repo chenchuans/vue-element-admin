@@ -19,12 +19,16 @@
     <el-tabs v-model="activeTabName" type="card" class="tab">
       <el-tab-pane label="跟进记录" name="flower">
         <div v-show="!isShowAllButton" class="flower">
-          <el-input type="textarea" rows="4" v-model="flowerInput" placeholder="请输入点击按钮确认提交" />
+          <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
           <div class="flower-btn">
             <el-button
               type="primary"
               @click="handleCloseFlower"
             >{{ btnText === '增加跟进记录' && flowerInput ? '确认添加' : btnText }}</el-button>
+            <el-button
+              type="primary"
+              @click="handlePrevClue"
+            >上一条线索</el-button>
             <el-button
               type="primary"
               @click="handleNextClue"
@@ -50,8 +54,8 @@
               <el-button
                 v-show="!isShowAllButton"
                 size="small"
-                @click="handleFlowerEdit(scope.row)"
                 style="margin-right: 10px"
+                @click="handleFlowerEdit(scope.row)"
               >编辑</el-button>
               <el-popconfirm
                 v-show="!isShowAllButton"
@@ -162,7 +166,8 @@ export default {
     },
     handleNextClue() {
       const currentIndex = this.drawerList.findIndex(item => item.id === this.drawerInfo.id)
-      if (currentIndex === -1) {
+      const length = this.drawerList.length - 2
+      if (currentIndex > length || currentIndex < 0) {
         this.$message({
           message: '已经是当前页面最后一条线索，请退出线索详情进入下一页！',
           type: 'info'
@@ -170,6 +175,18 @@ export default {
         return
       }
       this.drawerInfo = JSON.parse(JSON.stringify(this.drawerList[currentIndex + 1]))
+      this.init()
+    },
+    handlePrevClue() {
+      const currentIndex = this.drawerList.findIndex(item => item.id === this.drawerInfo.id)
+      if (currentIndex < 1) {
+        this.$message({
+          message: '已经是当前页面第一条线索，请退出线索详情进入上一页！',
+          type: 'info'
+        })
+        return
+      }
+      this.drawerInfo = JSON.parse(JSON.stringify(this.drawerList[currentIndex - 1]))
       this.init()
     },
     // 收藏
