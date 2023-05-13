@@ -27,16 +27,16 @@
             >{{ btnText === '增加跟进记录' && flowerInput ? '确认添加' : btnText }}</el-button>
             <el-button
               type="primary"
-              @click="handlePrevClue"
-            >上一条线索</el-button>
-            <el-button
-              type="primary"
               @click="handleNextClue"
             >下一条线索</el-button>
             <el-button
               type="primary"
               @click="handleCollect"
             >{{ collectStatus === 0 ? '收藏' : '取消收藏' }}</el-button>
+            <el-button
+              type="primary"
+              @click="handlePrevClue"
+            >上一条线索</el-button>
           </div>
         </div>
         <el-table

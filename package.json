@@ -1,7 +1,7 @@
 {
   "name": "clue",
   "version": "4.4.0",
-  "description": "APP-CRM",
+  "description": "嘉晟CRM",
   "author": "chenfu",
   "scripts": {
     "dev": "vue-cli-service serve",

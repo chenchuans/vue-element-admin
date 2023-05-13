@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: APP-CRM</div>
+    <div class="dashboard-text">name: 嘉晟CRM</div>
   </div>
 </template>
 
