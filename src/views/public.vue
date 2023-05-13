@@ -14,9 +14,27 @@
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
         </el-popconfirm> -->
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+        <el-button
+          v-if="!isNoAdmin"
+          type="primary"
+          style="margin-left: 20px"
+          @click="handleDownload"
+        >下载</el-button>
       </div>
 
       <div>
+        <el-date-picker
+          v-model="timeDate"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+          style="margin-right: 20px"
+          @change="handleDateChange"
+        />
         <el-select
           v-model="searchFlowerType"
           placeholder="请选择跟进类型"
@@ -244,8 +262,9 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, publicList, publicTrans, dataUsers } from '@/api/clue'
+import { clueAdd, clueDel, clueEdit, publicList, publicDownload, publicTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
+import { download, getNowFormatDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -253,6 +272,48 @@ export default {
   },
   data() {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
@@ -277,12 +338,13 @@ export default {
       tableTransForm: {},
       tableList: [],
       listLoading: false,
-
+      timeDate: [],
       drawer: false,
       drawerInfo: {}
     }
   },
   created() {
+    this.timeDate = [new Date(), new Date()]
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'SUPER_USER'
     this.pagination = pagination
@@ -303,7 +365,9 @@ export default {
       const req = {
         page,
         size,
-        phone: this.searchKey
+        phone: this.searchKey,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchSelectId) {
@@ -319,6 +383,22 @@ export default {
         this.pagination.total = response.data.total
         this.listLoading = false
       })
+    },
+    handleDownload() {
+      const { page, size } = this.pagination
+      publicDownload({
+        page,
+        size,
+        time: this.time,
+        phone: this.searchKey,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1])
+      }).then(response => {
+        download(response, '公海')
+      })
+    },
+    handleDateChange() {
+      this.fetchData()
     },
     handleSearch() {
       this.fetchData()
@@ -402,7 +482,6 @@ export default {
 }
 .app-container-top-left {
   display: flex;
-  justify-content: space-between;
   justify-items: center;
   width: 400px;
 }

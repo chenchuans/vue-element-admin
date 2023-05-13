@@ -16,43 +16,54 @@
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
       </div>
       <h2 class="title">每小时40通次，每小时3单+，月入4万+</h2>
-
-      <div>
-        <el-select
-          v-model="searchFlowerType"
-          placeholder="请选择跟进类型"
-          clearable
-          style="margin-right: 8px;"
-          @change="handleSearch"
-        >
-          <el-option
-            label="已跟进"
-            value="1"
-          />
-          <el-option
-            label="未跟进"
-            value="0"
-          />
-        </el-select>
-        <el-select
-          v-model="searchSelectId"
-          placeholder="请选择负责人"
-          filterable
-          clearable
-          style="margin-right: 8px;"
-          @change="handleSearch"
-        >
-          <el-option
-            v-for="(item, index) in ownerList"
-            :key="index"
-            :label="item.ownerName"
-            :value="item.ownerId"
-          />
-        </el-select>
-        <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
-          <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
-        </el-input>
-      </div>
+    </div>
+    <div style="margin-bottom: 20px">
+      <el-date-picker
+        v-model="timeDate"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        style="margin-right: 20px"
+        @change="handleDateChange"
+      />
+      <el-select
+        v-model="searchFlowerType"
+        placeholder="请选择跟进类型"
+        clearable
+        style="margin-right: 8px;"
+        @change="handleSearch"
+      >
+        <el-option
+          label="已跟进"
+          value="1"
+        />
+        <el-option
+          label="未跟进"
+          value="0"
+        />
+      </el-select>
+      <el-select
+        v-model="searchSelectId"
+        placeholder="请选择负责人"
+        filterable
+        clearable
+        style="margin-right: 8px;"
+        @change="handleSearch"
+      >
+        <el-option
+          v-for="(item, index) in ownerList"
+          :key="index"
+          :label="item.ownerName"
+          :value="item.ownerId"
+        />
+      </el-select>
+      <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
+      </el-input>
     </div>
     <el-table
       v-loading="listLoading"
@@ -252,6 +263,7 @@
 <script>
 import { clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
 import drawercontent from './drawercontent'
+import { getNowFormatDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -259,6 +271,48 @@ export default {
   },
   data() {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
@@ -283,12 +337,13 @@ export default {
       tableTransForm: {},
       tableList: [],
       listLoading: false,
-
+      timeDate: [],
       drawer: false,
       drawerInfo: {}
     }
   },
   created() {
+    this.timeDate = [new Date(), new Date()]
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
@@ -308,7 +363,9 @@ export default {
       const req = {
         page,
         size,
-        phone: this.searchKey
+        phone: this.searchKey,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchSelectId) {
@@ -324,6 +381,9 @@ export default {
         this.pagination.total = response.data.total
         this.listLoading = false
       })
+    },
+    handleDateChange() {
+      this.fetchData()
     },
     handleSearch() {
       this.fetchData()

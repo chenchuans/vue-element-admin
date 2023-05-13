@@ -45,6 +45,24 @@ export function collectList(data) {
   })
 }
 
+// 公海下载
+export function publicDownload(data) {
+  return request({
+    url: '/back/clue/public/download',
+    method: 'post',
+    data
+  })
+}
+
+// 所有数据下载
+export function allDataDownload(data) {
+  return request({
+    url: '/back/clue/all/download',
+    method: 'post',
+    data
+  })
+}
+
 // 展示所有公海
 export function publicList(data) {
   return request({
