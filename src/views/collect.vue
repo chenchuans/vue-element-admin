@@ -15,7 +15,6 @@
         </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
       </div>
-      <h2 class="title">每小时40通次，每小时3单+，月入4万+</h2>
     </div>
     <div style="margin-bottom: 20px">
       <el-date-picker
@@ -30,6 +29,21 @@
         style="margin-right: 20px"
         @change="handleDateChange"
       />
+      <el-select
+        v-model="orderType"
+        placeholder="请选择排序字段"
+        style="margin-right: 20px"
+        @change="handleSortChange"
+      >
+        <el-option
+          label="创建时间排序"
+          value="default"
+        />
+        <el-option
+          label="跟进时间排序"
+          value="follow"
+        />
+      </el-select>
       <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
         <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
@@ -67,6 +81,11 @@
       <el-table-column label="最新跟进" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
+        </template>
+      </el-table-column>
+      <el-table-column label="跟进时间" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.followTime }}
         </template>
       </el-table-column>
       <el-table-column label="负责人" width="200" align="center">
@@ -300,6 +319,7 @@ export default {
         ownerName: '',
         name: ''
       },
+      orderType: 'default',
       tableTransForm: {},
       tableList: [],
       listLoading: false,
@@ -324,15 +344,15 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      const { pagination } = this
-      const { page, size } = pagination
+      const { page, size } = this.pagination
 
       collectList({
         page,
         size,
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
+        endTime: getNowFormatDate(this.timeDate[1]),
+        orderType: this.orderType
       }).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
@@ -398,6 +418,10 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    handleSortChange() {
+      // 跟随时间排序
+      this.fetchData()
     },
     rowClick(row, column) {
       // 点击某一行时会触发

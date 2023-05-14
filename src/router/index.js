@@ -84,6 +84,13 @@ export const constantRoutes = [
         name: '所有数据',
         component: () => import('@/views/alldata'),
         meta: { title: '所有数据', icon: 'dashboard' }
+      },
+      {
+        path: 'library',
+        name: '在库数据',
+        component: () => import('@/views/libraryData'),
+        meta: { title: '在库数据', icon: 'dashboard' },
+        roles: ['SUPER_ADMIN']
       }
     ]
   },

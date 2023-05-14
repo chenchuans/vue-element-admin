@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,72 +12,63 @@
           @onConfirm="handleDelete"
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
-        </el-popconfirm>
-        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
+        </el-popconfirm> -->
+        <!-- <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button> -->
+        <el-button
+          v-if="!isNoAdmin"
+          type="primary"
+          style="margin-left: 20px"
+          @click="handleDownload"
+        >下载</el-button>
       </div>
-    </div>
-    <div style="margin-bottom: 20px">
-      <el-date-picker
-        v-model="timeDate"
-        type="daterange"
-        align="right"
-        unlink-panels
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        :picker-options="pickerOptions"
-        style="margin-right: 8px"
-        @change="handleDateChange"
-      />
-      <el-select
-        v-model="orderType"
-        placeholder="请选择排序字段"
-        style="margin-right: 8px; width: 150px;"
-        @change="handleSortChange"
-      >
-        <el-option
-          label="创建时间排序"
-          value="default"
+      <div>
+        <el-date-picker
+          v-model="timeDate"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+          style="margin-right: 20px"
+          @change="handleDateChange"
         />
-        <el-option
-          label="跟进时间排序"
-          value="follow"
-        />
-      </el-select>
-      <el-select
-        v-model="searchFlowerType"
-        placeholder="请选择跟进类型"
-        clearable
-        style="margin-right: 8px; width: 150px;"
-        @change="handleSearch"
-      >
-        <el-option
-          label="已跟进"
-          value="1"
-        />
-        <el-option
-          label="未跟进"
-          value="0"
-        />
-      </el-select>
-      <el-select
-        v-model="searchSelectId"
-        placeholder="请选择负责人"
-        filterable
-        clearable
-        style="margin-right: 8px; width: 150px;"
-        @change="handleSearch"
-      >
-        <el-option
-          v-for="(item, index) in ownerList"
-          :key="index"
-          :label="item.ownerName"
-          :value="item.ownerId"
-        />
-      </el-select>
-      <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
-        <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
-      </el-input>
+        <el-select
+          v-model="searchFlowerType"
+          placeholder="请选择跟进类型"
+          clearable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            label="已跟进"
+            value="1"
+          />
+          <el-option
+            label="未跟进"
+            value="0"
+          />
+        </el-select>
+        <el-select
+          v-model="searchSelectId"
+          placeholder="请选择负责人"
+          clearable
+          filterable
+          style="margin-right: 8px;"
+          @change="handleSearch"
+        >
+          <el-option
+            v-for="(item, index) in ownerList"
+            :key="index"
+            :label="item.ownerName"
+            :value="item.ownerId"
+          />
+        </el-select>
+        <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
+        </el-input>
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
@@ -104,19 +95,9 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="剩余时间" width="150" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.remainderTime }}
-        </template>
-      </el-table-column>
       <el-table-column label="最新跟进" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
-        </template>
-      </el-table-column>
-      <el-table-column label="跟进时间" width="150" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.followTime }}
         </template>
       </el-table-column>
       <el-table-column label="负责人" width="200" align="center">
@@ -128,16 +109,6 @@
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="200" align="center">
-        <template slot-scope="scope">
-          <el-button
-            size="small"
-            style="margin-right: 10px"
-            :disabled="isNoAdmin"
-            @click="handleEdit(scope.row)"
-          >编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -217,9 +188,9 @@
         <el-form-item label="负责人">
           <el-select
             v-model="tableAddForm.ownerId"
-            placeholder="请选择负责人"
             clearable
             filterable
+            placeholder="请选择负责人"
           >
             <el-option
               v-for="(item, index) in ownerList"
@@ -280,9 +251,9 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
+import { clueAdd, clueDel, clueEdit, zaiDataList, zaiDataDownload, zaiDataTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
-import { getNowFormatDate } from '@/utils/tool'
+import { download, getNowFormatDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -332,6 +303,7 @@ export default {
           }
         }]
       },
+      timeDate: [],
       isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
@@ -345,7 +317,6 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
-      orderType: 'default',
       ownerList: [],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
@@ -357,7 +328,7 @@ export default {
       tableTransForm: {},
       tableList: [],
       listLoading: false,
-      timeDate: [],
+
       drawer: false,
       drawerInfo: {}
     }
@@ -365,10 +336,10 @@ export default {
   created() {
     this.timeDate = [new Date(), new Date()]
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
-    this.isNoAdmin = userRole === 'COMMON_USER'
+    this.isNoAdmin = userRole === 'SUPER_USER'
     this.pagination = pagination
     this.fetchData()
-    clueUsers({}).then(response => {
+    dataUsers({}).then(response => {
       this.ownerList = response.data.map(item => ({
         ownerName: item.userCnName || '暂无中文名',
         ownerId: item.id
@@ -378,15 +349,15 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      const { page, size } = this.pagination
+      const { pagination } = this
+      const { page, size } = pagination
 
       const req = {
         page,
         size,
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1]),
-        orderType: this.orderType
+        endTime: getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchSelectId) {
@@ -397,20 +368,29 @@ export default {
         req.status = this.searchFlowerType
       }
 
-      clueList(req).then(response => {
+      zaiDataList(req).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
         this.listLoading = false
       })
     },
-    handleSortChange() {
-      // 跟随时间排序
+    handleSearch() {
       this.fetchData()
+    },
+    handleDownload() {
+      const { page, size } = this.pagination
+      zaiDataDownload({
+        page,
+        size,
+        time: this.time,
+        phone: this.searchKey,
+        startTime: getNowFormatDate(this.timeDate[0]),
+        endTime: getNowFormatDate(this.timeDate[1])
+      }).then(response => {
+        download(response, '所有数据')
+      })
     },
     handleDateChange() {
-      this.fetchData()
-    },
-    handleSearch() {
       this.fetchData()
     },
     handleEdit(row) {
@@ -455,7 +435,7 @@ export default {
     handleTransfer() {
       // 批量修改跟进
       const { ownerId } = this.tableTransForm
-      clueTrans({
+      zaiDataTrans({
         id: this.multipleSelection.map(item => item.id),
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName
@@ -472,10 +452,6 @@ export default {
       if (column.type === 'selection' || column.label === '操作') return
       this.drawer = true
       this.drawerInfo = JSON.parse(JSON.stringify(row))
-      // 上报电话
-      phoneAdd({
-        phone: row.phone
-      })
     },
     handleSizeChange(size) {
       this.pagination.size = size
@@ -494,14 +470,9 @@ export default {
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.title {
-  line-height: 40px;
-  color: #fe3549;
-  margin: 0;
-}
 .app-container-top-left {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   justify-items: center;
   width: 400px;
 }

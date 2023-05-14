@@ -21,18 +21,20 @@
         <div v-show="!isShowAllButton" class="flower">
           <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
           <div class="flower-btn">
-            <el-button
-              type="primary"
-              @click="handleCloseFlower"
-            >{{ btnText === '增加跟进记录' && flowerInput ? '确认添加' : btnText }}</el-button>
-            <el-button
-              type="primary"
-              @click="handleNextClue"
-            >下一条线索</el-button>
-            <el-button
-              type="primary"
-              @click="handleCollect"
-            >{{ collectStatus === 0 ? '收藏' : '取消收藏' }}</el-button>
+            <div>
+              <el-button
+                type="primary"
+                @click="handleCloseFlower"
+              >{{ btnText === '增加跟进记录' && flowerInput ? '确认添加' : btnText }}</el-button>
+              <el-button
+                type="primary"
+                @click="handleNextClue"
+              >下一条线索</el-button>
+              <el-button
+                type="primary"
+                @click="handleCollect"
+              >{{ collectStatus === 0 ? '收藏' : '取消收藏' }}</el-button>
+            </div>
             <el-button
               type="primary"
               @click="handlePrevClue"
@@ -263,7 +265,6 @@ export default {
 }
 .flower-btn {
   padding-top: 20px;
-  width: 400px;
   display: flex;
   justify-content: space-between;
 }

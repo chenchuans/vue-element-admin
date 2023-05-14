@@ -81,6 +81,24 @@ export function allDataList(data) {
   })
 }
 
+// 展示在库数据列表
+export function zaiDataList(data) {
+  return request({
+    url: '/back/clue/zaiku/list',
+    method: 'post',
+    data
+  })
+}
+
+// 在库数据下载
+export function zaiDataDownload(data) {
+  return request({
+    url: '/back/clue/zaiku/download',
+    method: 'post',
+    data
+  })
+}
+
 // 线索转移
 export function clueTrans(data) {
   return request({

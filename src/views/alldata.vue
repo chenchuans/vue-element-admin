@@ -482,7 +482,7 @@ export default {
 }
 .app-container-top-left {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   justify-items: center;
   width: 400px;
 }
