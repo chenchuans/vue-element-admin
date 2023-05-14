@@ -329,7 +329,10 @@ export default {
     }
   },
   created() {
-    this.timeDate = [new Date(), new Date()]
+    const end = new Date()
+    const start = new Date()
+    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+    this.timeDate = [start, end]
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
@@ -356,6 +359,9 @@ export default {
       }).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
+        this.listLoading = false
+      }).catch(error => {
+        console.log(error)
         this.listLoading = false
       })
     },
