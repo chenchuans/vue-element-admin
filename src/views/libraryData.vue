@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button> -->
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,10 +12,9 @@
           @onConfirm="handleDelete"
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
-        </el-popconfirm> -->
-        <!-- <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button> -->
+        </el-popconfirm>
+        <el-button type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
         <el-button
-          v-if="!isNoAdmin"
           type="primary"
           style="margin-left: 20px"
           @click="handleDownload"
@@ -304,7 +303,6 @@ export default {
         }]
       },
       timeDate: [],
-      isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
       searchFlowerType: '',
@@ -338,8 +336,7 @@ export default {
     const start = new Date()
     start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
     this.timeDate = [start, end]
-    const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
-    this.isNoAdmin = userRole === 'SUPER_USER'
+    const { pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.pagination = pagination
     this.fetchData()
     dataUsers({}).then(response => {
