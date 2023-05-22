@@ -250,7 +250,7 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, zaiDataList, zaiDataDownload, zaiDataTrans, dataUsers } from '@/api/clue'
+import { clueAdd, clueDel, clueEdit, zaiDataList, clueTrans, zaiDataDownload, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { download, getNowFormatDate } from '@/utils/tool'
 
@@ -382,14 +382,21 @@ export default {
     },
     handleDownload() {
       const { page, size } = this.pagination
-      zaiDataDownload({
+      const req = {
         page,
         size,
-        time: this.time,
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1])
-      }).then(response => {
+      }
+      if (this.searchSelectId) {
+        req.userId = this.searchSelectId
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
+      }
+      zaiDataDownload(req).then(response => {
         download(response, '所有数据')
       })
     },
@@ -438,7 +445,7 @@ export default {
     handleTransfer() {
       // 批量修改跟进
       const { ownerId } = this.tableTransForm
-      zaiDataTrans({
+      clueTrans({
         id: this.multipleSelection.map(item => item.id),
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName

@@ -392,14 +392,21 @@ export default {
     },
     handleDownload() {
       const { page, size } = this.pagination
-      publicDownload({
+      const req = {
         page,
         size,
-        time: this.time,
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1])
-      }).then(response => {
+      }
+      if (this.searchSelectId) {
+        req.userId = this.searchSelectId
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
+      }
+      publicDownload(req).then(response => {
         download(response, '公海')
       })
     },
