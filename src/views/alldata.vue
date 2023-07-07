@@ -68,7 +68,6 @@
         <el-select
           v-model="detailStatusIndex"
           placeholder="请选择详细跟进状态"
-          clearable
           filterable
           style="margin-right: 8px;"
           @change="handleSelectDetailStatus"

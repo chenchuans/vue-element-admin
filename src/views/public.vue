@@ -66,6 +66,20 @@
             :value="item.ownerId"
           />
         </el-select>
+        <el-select
+          v-model="detailStatusIndex"
+          placeholder="请选择详细跟进状态"
+          filterable
+          style="margin-right: 8px;"
+          @change="handleSelectDetailStatus"
+        >
+          <el-option
+            v-for="(item, index) in detailStatusList"
+            :key="index"
+            :label="item"
+            :value="index"
+          />
+        </el-select>
         <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
           <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
         </el-input>
@@ -340,7 +354,9 @@ export default {
       listLoading: false,
       timeDate: [],
       drawer: false,
-      drawerInfo: {}
+      drawerInfo: {},
+      detailStatusIndex: 0,
+      detailStatusList: ['所有', '未接通/关机/空号/挂断', '明确不需要', '待会联系', '加微未通过', '加微未下载', '已下载', '苹果手机']
     }
   },
   created() {
@@ -379,6 +395,10 @@ export default {
 
       if (this.searchFlowerType) {
         req.status = this.searchFlowerType
+      }
+
+      if (this.detailStatusIndex) {
+        req.statusDetail = this.detailStatusIndex
       }
 
       publicList(req).then(response => {
@@ -482,6 +502,9 @@ export default {
     },
     handleCurrentChange(page) {
       this.pagination.page = page
+      this.fetchData()
+    },
+    handleSelectDetailStatus() {
       this.fetchData()
     }
   }
