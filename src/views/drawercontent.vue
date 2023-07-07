@@ -21,11 +21,7 @@
         <div v-show="!isShowAllButton" class="flower">
           <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
           <div class="flower-btn1">
-            <el-button type="success" @click="handle1">加微信</el-button>
-            <el-button type="success" @click="handle2">待会联系</el-button>
-            <el-button type="success" @click="handle3">已下载</el-button>
-            <el-button type="success" @click="handle4">未接通</el-button>
-            <el-button type="success" @click="handle5">不需要</el-button>
+            <el-button v-for="(item, index) in textList" :key="index" type="success" @click="handleText(item)">{{ item }}</el-button>
           </div>
           <div class="flower-btn">
             <div>
@@ -123,6 +119,7 @@ export default {
       btnText: '增加跟进记录',
       followList: [],
       operateList: [],
+      textList: ['加微信', '待会联系', '已下载', '未接通', '不需要'],
       isShowAllButton: this.$route.path.includes('public')
     }
   },
@@ -254,29 +251,9 @@ export default {
         })
       }
     },
-    handle1() {
+    handleText(text) {
       this.btnText = '增加跟进记录'
-      this.flowerInput = '加微信'
-      this.handleCloseFlower()
-    },
-    handle2() {
-      this.btnText = '增加跟进记录'
-      this.flowerInput = '待会联系'
-      this.handleCloseFlower()
-    },
-    handle3() {
-      this.btnText = '增加跟进记录'
-      this.flowerInput = '已下载'
-      this.handleCloseFlower()
-    },
-    handle4() {
-      this.btnText = '增加跟进记录'
-      this.flowerInput = '未接通'
-      this.handleCloseFlower()
-    },
-    handle5() {
-      this.btnText = '增加跟进记录'
-      this.flowerInput = '不需要'
+      this.flowerInput = text
       this.handleCloseFlower()
     }
   }
@@ -303,5 +280,10 @@ export default {
 .flower-btn1 {
   padding-top: 20px;
   display: flex;
+}
+</style>
+<style>
+.el-drawer.rtl {
+  overflow: scroll;
 }
 </style>
