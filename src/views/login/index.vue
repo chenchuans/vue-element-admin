@@ -98,7 +98,7 @@ export default {
     // 手机号码正确验证
     phoneNumVerify() {
       const phone = Number(this.loginForm.phone)
-      return /[1][3,4,5,6,7,8][0-9]{9}$/.test(phone)
+      return /[1][0-9][0-9]{9}$/.test(phone)
     },
     handleChangeLogin() {
       this.currentLoginType = this.currentLoginType === 'account' ? 'phone' : 'account'

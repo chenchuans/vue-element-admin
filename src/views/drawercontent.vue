@@ -8,9 +8,9 @@
         <span>{{ drawerInfo.status === 1 ? '已跟进' : '未跟进' }}</span>
       </el-form-item>
       <el-form-item label="手机号：">
-        <span style="padding-right: 30px">{{ drawerInfo.phone }}</span>
-        <el-button v-show="!isShowAllButton" size="small" style="margin-right: 30px" @click="handleCopy">复制</el-button>
-        <el-button v-show="!isShowAllButton" size="small" @click="handlePhone">拨打手机</el-button>
+        <span style="padding-right: 30px; font-size: 28px">{{ drawerInfo.phone }}</span>
+        <el-button v-show="!isShowAllButton" type="primary" size="large" style="margin-right: 30px" @click="handleCopy">复制</el-button>
+        <el-button v-show="!isShowAllButton" type="primary" size="large" @click="handlePhone">拨打手机</el-button>
       </el-form-item>
       <el-form-item label="负责人：">
         <span>{{ drawerInfo.ownerName }}</span>
@@ -20,6 +20,13 @@
       <el-tab-pane label="跟进记录" name="flower">
         <div v-show="!isShowAllButton" class="flower">
           <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
+          <div class="flower-btn1">
+            <el-button type="success" @click="handle1">加微信</el-button>
+            <el-button type="success" @click="handle2">待会联系</el-button>
+            <el-button type="success" @click="handle3">已下载</el-button>
+            <el-button type="success" @click="handle4">未接通</el-button>
+            <el-button type="success" @click="handle5">不需要</el-button>
+          </div>
           <div class="flower-btn">
             <div>
               <el-button
@@ -246,6 +253,31 @@ export default {
           this.fetchData()
         })
       }
+    },
+    handle1() {
+      this.btnText = '增加跟进记录'
+      this.flowerInput = '加微信'
+      this.handleCloseFlower()
+    },
+    handle2() {
+      this.btnText = '增加跟进记录'
+      this.flowerInput = '待会联系'
+      this.handleCloseFlower()
+    },
+    handle3() {
+      this.btnText = '增加跟进记录'
+      this.flowerInput = '已下载'
+      this.handleCloseFlower()
+    },
+    handle4() {
+      this.btnText = '增加跟进记录'
+      this.flowerInput = '未接通'
+      this.handleCloseFlower()
+    },
+    handle5() {
+      this.btnText = '增加跟进记录'
+      this.flowerInput = '不需要'
+      this.handleCloseFlower()
     }
   }
 }
@@ -267,5 +299,9 @@ export default {
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
+}
+.flower-btn1 {
+  padding-top: 20px;
+  display: flex;
 }
 </style>
