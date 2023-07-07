@@ -16,13 +16,13 @@
         <span>{{ drawerInfo.ownerName }}</span>
       </el-form-item>
     </el-form>
+    <div class="flower-btn1">
+      <el-button v-for="(item, index) in textList" :key="index" type="success" @click="handleText(item, index)">{{ item }}</el-button>
+    </div>
     <el-tabs v-model="activeTabName" type="card" class="tab">
       <el-tab-pane label="跟进记录" name="flower">
         <div v-show="!isShowAllButton" class="flower">
           <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
-          <div class="flower-btn1">
-            <el-button v-for="(item, index) in textList" :key="index" type="success" @click="handleText(item)">{{ item }}</el-button>
-          </div>
           <div class="flower-btn">
             <div>
               <el-button
@@ -33,10 +33,10 @@
                 type="primary"
                 @click="handleNextClue"
               >下一条线索</el-button>
-              <el-button
+              <!-- <el-button
                 type="primary"
                 @click="handleCollect"
-              >{{ collectStatus === 0 ? '收藏' : '取消收藏' }}</el-button>
+              >{{ collectStatus === 0 ? '收藏' : '取消收藏' }}</el-button> -->
             </div>
             <el-button
               type="primary"
@@ -96,7 +96,7 @@
 
 <script>
 import { opList, followupList, followupAdd, followupEdit, followupDel, addCollect, cancelCollect } from '@/api/cluedetail'
-import { phoneAdd } from '@/api/clue'
+import { phoneAdd, clueEdit } from '@/api/clue'
 
 export default {
   props: {
@@ -119,7 +119,7 @@ export default {
       btnText: '增加跟进记录',
       followList: [],
       operateList: [],
-      textList: ['加微信', '待会联系', '已下载', '未接通', '不需要'],
+      textList: ['未接通/关机/空号/挂断', '明确不需要', '待会联系', '加微未通过', '加微未下载', '已下载', '苹果手机'],
       isShowAllButton: this.$route.path.includes('public')
     }
   },
@@ -251,10 +251,18 @@ export default {
         })
       }
     },
-    handleText(text) {
+    handleText(text, index) {
       this.btnText = '增加跟进记录'
       this.flowerInput = text
       this.handleCloseFlower()
+      const id = this.drawerInfo.id
+      clueEdit({
+        id,
+        statusDetail: index + 1
+      })
+      addCollect({
+        clueId: id
+      })
     }
   }
 }
@@ -278,7 +286,6 @@ export default {
   justify-content: space-between;
 }
 .flower-btn1 {
-  padding-top: 20px;
   display: flex;
 }
 </style>

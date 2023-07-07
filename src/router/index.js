@@ -54,13 +54,57 @@ export const constantRoutes = [
   {
     path: '/collect',
     component: Layout,
-    redirect: '/collect/index',
+    redirect: '/collect/index1',
+    name: '转化跟进',
+    meta: { title: '转化跟进', icon: 'dashboard' },
     children: [
+      // {
+      //   path: 'index',
+      //   name: '所有跟进',
+      //   component: () => import('@/views/collect'),
+      //   meta: { title: '所有跟进', icon: 'dashboard' },
+      // },
       {
-        path: 'index',
-        name: '我的收藏',
-        component: () => import('@/views/collect'),
-        meta: { title: '我的收藏', icon: 'dashboard' }
+        path: 'index1',
+        name: '未接通/关机/空号/挂断',
+        component: () => import('@/views/collect1'),
+        meta: { title: '未接通/关机/空号/挂断', icon: 'dashboard' }
+      },
+      {
+        path: 'index2',
+        name: '明确不需要',
+        component: () => import('@/views/collect1'),
+        meta: { title: '明确不需要', icon: 'dashboard' }
+      },
+      {
+        path: 'index3',
+        name: '待会联系',
+        component: () => import('@/views/collect1'),
+        meta: { title: '待会联系', icon: 'dashboard' }
+      },
+      {
+        path: 'index4',
+        name: '加微未通过',
+        component: () => import('@/views/collect1'),
+        meta: { title: '加微未通过', icon: 'dashboard' }
+      },
+      {
+        path: 'index5',
+        name: '加微信未下载',
+        component: () => import('@/views/collect1'),
+        meta: { title: '加微信未下载', icon: 'dashboard' }
+      },
+      {
+        path: 'index6',
+        name: '已下载',
+        component: () => import('@/views/collect1'),
+        meta: { title: '已下载', icon: 'dashboard' }
+      },
+      {
+        path: 'index7',
+        name: '苹果手机',
+        component: () => import('@/views/collect1'),
+        meta: { title: '苹果手机', icon: 'dashboard' }
       }
     ]
   },
