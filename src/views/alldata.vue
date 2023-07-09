@@ -277,7 +277,7 @@
 <script>
 import { clueAdd, clueDel, clueEdit, allDataList, allDataDownload, allDataTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
-import { download, getNowFormatDate } from '@/utils/tool'
+import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -360,10 +360,7 @@ export default {
     }
   },
   created() {
-    const end = new Date()
-    const start = new Date()
-    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-    this.timeDate = [start, end]
+    this.timeDate = defaultStartEndDate()
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'SUPER_USER'
     this.pagination = pagination

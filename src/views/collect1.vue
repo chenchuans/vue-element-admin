@@ -29,21 +29,6 @@
         style="margin-right: 20px"
         @change="handleDateChange"
       />
-      <el-select
-        v-model="orderType"
-        placeholder="请选择排序字段"
-        style="margin-right: 20px"
-        @change="handleSortChange"
-      >
-        <el-option
-          label="创建时间排序"
-          value="default"
-        />
-        <el-option
-          label="跟进时间排序"
-          value="follow"
-        />
-      </el-select>
       <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
         <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
@@ -250,7 +235,7 @@
 <script>
 import { clueAdd, clueDel, clueEdit, collectList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
 import drawercontent from './drawercontent'
-import { getNowFormatDate } from '@/utils/tool'
+import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -319,7 +304,6 @@ export default {
         ownerName: '',
         name: ''
       },
-      orderType: 'default',
       tableTransForm: {},
       tableList: [],
       listLoading: false,
@@ -329,10 +313,11 @@ export default {
     }
   },
   created() {
-    const end = new Date()
-    const start = new Date()
-    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-    this.timeDate = [start, end]
+    // const end = new Date()
+    // const start = new Date()
+    // start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+    this.timeDate = defaultStartEndDate(30)
+
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
@@ -355,7 +340,6 @@ export default {
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1]),
-        orderType: this.orderType,
         statusDetail: Number(str.slice(-1))
       }).then(response => {
         this.tableList = response.data.data
@@ -425,10 +409,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    handleSortChange() {
-      // 跟随时间排序
-      this.fetchData()
     },
     rowClick(row, column) {
       // 点击某一行时会触发

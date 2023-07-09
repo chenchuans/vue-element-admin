@@ -19,6 +19,18 @@ export function getNowFormatDate(da) {
 }
 
 /**
+ * @param {number} date
+ * @returns {Array}
+ */
+// 设置每个页面时间选择器的间隔天数，目前默认7天，只有转化跟进下是30天
+export function defaultStartEndDate(date = 7) {
+  const end = new Date()
+  const start = new Date()
+  start.setTime(start.getTime() - 3600 * 1000 * 24 * date)
+  return [start, end]
+}
+
+/**
  * @param {fileStream} Arraybuffer
  * @param {string} filename
  * @returns {undefined}
