@@ -191,6 +191,7 @@ export const constantRoutes = [
     redirect: '/rank/today',
     name: '业绩排行',
     meta: { title: '业绩排行', icon: 'dashboard' },
+    roles: ['SUPER_ADMIN'],
     children: [
       {
         path: 'today',
