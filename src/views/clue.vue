@@ -30,21 +30,6 @@
         @change="handleDateChange"
       />
       <el-select
-        v-model="orderType"
-        placeholder="请选择排序字段"
-        style="margin-right: 8px; width: 150px;"
-        @change="handleSortChange"
-      >
-        <el-option
-          label="创建时间排序"
-          value="default"
-        />
-        <el-option
-          label="跟进时间排序"
-          value="follow"
-        />
-      </el-select>
-      <el-select
         v-model="searchFlowerType"
         placeholder="请选择跟进类型"
         clearable
@@ -345,7 +330,6 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
-      orderType: 'default',
       ownerList: [],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
@@ -363,7 +347,7 @@ export default {
     }
   },
   created() {
-    this.timeDate = defaultStartEndDate()
+    this.timeDate = defaultStartEndDate(30)
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
@@ -385,8 +369,7 @@ export default {
         size,
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1]),
-        orderType: this.orderType
+        endTime: getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchSelectId) {
@@ -405,10 +388,6 @@ export default {
         console.log(error)
         this.listLoading = false
       })
-    },
-    handleSortChange() {
-      // 跟随时间排序
-      this.fetchData()
     },
     handleDateChange() {
       this.fetchData()
