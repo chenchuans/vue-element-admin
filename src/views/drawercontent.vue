@@ -17,7 +17,7 @@
       </el-form-item>
     </el-form>
     <div class="flower-btn1">
-      <el-button v-for="(item, index) in textList" :key="index" type="success" @click="handleText(item, index)">{{ item }}</el-button>
+      <el-button v-for="(item, index) in textList" :key="index" :loading="operateBtnLoading" type="success" @click="handleText(item, index)">{{ item }}</el-button>
     </div>
     <el-tabs v-model="activeTabName" type="card" class="tab">
       <el-tab-pane label="跟进记录" name="flower">
@@ -27,10 +27,12 @@
             <div>
               <el-button
                 type="primary"
+                :loading="operateBtnLoading"
                 @click="handleCloseFlower"
               >{{ btnText === '增加跟进记录' && flowerInput ? '确认添加' : btnText }}</el-button>
               <el-button
                 type="primary"
+                :loading="operateBtnLoading"
                 @click="handleNextClue"
               >下一条线索</el-button>
               <!-- <el-button
@@ -40,6 +42,7 @@
             </div>
             <el-button
               type="primary"
+              :loading="operateBtnLoading"
               @click="handlePrevClue"
             >上一条线索</el-button>
           </div>
@@ -120,7 +123,8 @@ export default {
       followList: [],
       operateList: [],
       textList: ['未接通/关机/空号/挂断', '明确不需要', '待会联系', '加微未通过', '加微未下载', '已下载', '苹果手机'],
-      isShowAllButton: this.$route.path.includes('public')
+      isShowAllButton: this.$route.path.includes('public'),
+      operateBtnLoading: false
     }
   },
   created() {
@@ -142,6 +146,10 @@ export default {
         clueId: this.drawerInfo.id
       }).then(response => {
         this.followList = response.data
+        this.operateBtnLoading = false
+      }).catch(error => {
+        console.log(error)
+        this.operateBtnLoading = false
       })
     },
     handleCopy() {
@@ -251,18 +259,22 @@ export default {
         })
       }
     },
-    handleText(text, index) {
+    async handleText(text, index) {
       this.btnText = '增加跟进记录'
+      this.operateBtnLoading = true
       this.flowerInput = text
-      this.handleCloseFlower()
       const id = this.drawerInfo.id
-      clueEdit({
-        id,
-        statusDetail: index + 1
-      })
-      addCollect({
-        clueId: id
-      })
+
+      Promise.all([
+        this.handleCloseFlower(),
+        clueEdit({
+          id,
+          statusDetail: index + 1
+        }),
+        addCollect({
+          clueId: id
+        })
+      ])
     }
   }
 }
