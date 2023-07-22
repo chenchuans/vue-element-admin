@@ -42,18 +42,18 @@
         <template slot-scope="scope">
           <el-button
             size="small"
-            @click="handleEdit(scope.row)"
             style="margin-right: 10px"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
           <el-popconfirm
-            confirm-button-text='好的'
-            cancel-button-text='不用了'
+            confirm-button-text="好的"
+            cancel-button-text="不用了"
             icon="el-icon-info"
             icon-color="red"
             title="确认要删除吗？"
             @onConfirm="handleDelete(scope.row)"
           >
-            <el-button type="danger" size="small" slot="reference">删除</el-button>
+            <el-button slot="reference" type="danger" size="small">删除</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -137,6 +137,14 @@ export default {
   created() {
     this.pagination = JSON.parse(localStorage.getItem('loginInfo') || '{}').pagination
     this.fetchData()
+
+    const { userRole = '' } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
+    if (userRole === 'COMMON_ADMIN') {
+      this.userList = [
+        { label: 'SUPER_USER', name: '主管' },
+        { label: 'COMMON_USER', name: '员工' }
+      ]
+    }
   },
   methods: {
     fetchData() {

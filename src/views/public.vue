@@ -15,7 +15,7 @@
         </el-popconfirm> -->
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
         <el-button
-          v-if="!isNoAdmin"
+          v-if="isAdmin2"
           type="primary"
           style="margin-left: 20px"
           @click="handleDownload"
@@ -350,6 +350,7 @@ export default {
         }]
       },
       isNoAdmin: false,
+      isAdmin2: false,
       searchKey: '',
       searchSelectId: '',
       searchFlowerType: '',
@@ -384,6 +385,7 @@ export default {
     this.timeDate = defaultStartEndDate()
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'SUPER_USER'
+    this.isAdmin2 = userRole === 'SUPER_ADMIN' || userRole === 'COMMON_ADMIN'
     this.pagination = pagination
     this.fetchData()
     dataUsers({}).then(response => {
