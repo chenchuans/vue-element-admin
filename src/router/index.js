@@ -154,9 +154,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/depar',
+    path: '/depart',
     component: Layout,
-    redirect: '/depar/index',
+    redirect: '/depart/index',
     children: [
       {
         path: 'index',
@@ -169,9 +169,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/admi',
+    path: '/admin',
     component: Layout,
-    redirect: '/admi/index',
+    redirect: '/admin/index',
     children: [
       {
         path: 'index',
