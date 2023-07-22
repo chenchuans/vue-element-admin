@@ -161,7 +161,7 @@ export const constantRoutes = [
       {
         path: 'index',
         name: '部门管理',
-        component: () => import('@/views/lunzhuan'),
+        component: () => import('@/views/depart'),
         meta: { title: '部门管理', icon: 'dashboard' }
       }
     ],
@@ -169,9 +169,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/admin1',
+    path: '/admi',
     component: Layout,
-    redirect: '/admin1/index',
+    redirect: '/admi/index',
     children: [
       {
         path: 'index',
