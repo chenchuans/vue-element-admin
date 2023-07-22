@@ -425,6 +425,7 @@ export default {
         page,
         size,
         phone: this.searchKey,
+        isFirstCall: 0,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1])
       }

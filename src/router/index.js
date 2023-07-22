@@ -154,24 +154,24 @@ export const constantRoutes = [
   },
 
   {
-    path: '/depart',
+    path: '/depar',
     component: Layout,
-    redirect: '/depart/index',
+    redirect: '/depar/index',
     children: [
       {
         path: 'index',
         name: '部门管理',
-        component: () => import('@/views/depart'),
+        component: () => import('@/views/lunzhuan'),
         meta: { title: '部门管理', icon: 'dashboard' }
       }
     ],
-    roles: ['SUPER_ADMIN']
+    roles: ['SUPER_ADMIN', 'COMMON_ADMIN']
   },
 
   {
-    path: '/admin',
+    path: '/admin1',
     component: Layout,
-    redirect: '/admin/index',
+    redirect: '/admin1/index',
     children: [
       {
         path: 'index',
@@ -180,7 +180,7 @@ export const constantRoutes = [
         meta: { title: '员工管理', icon: 'dashboard' }
       }
     ],
-    roles: ['SUPER_ADMIN']
+    roles: ['SUPER_ADMIN', 'COMMON_ADMIN']
     // roles: 向下管理
   },
 
