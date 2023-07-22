@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -11,9 +11,9 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
+          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
         </el-popconfirm>
-        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移线索</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
       </div>
     </div>
     <div style="margin-bottom: 20px">
@@ -79,14 +79,29 @@
         width="55"
         align="center"
       />
-      <el-table-column label="线索名称" align="center">
+      <el-table-column label="姓名" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="电话号码" width="150" align="center">
+      <el-table-column label="电话" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.phone }}
+        </template>
+      </el-table-column>
+      <el-table-column label="微信号" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.wxNum }}
+        </template>
+      </el-table-column>
+      <el-table-column label="学历" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.edu }}
+        </template>
+      </el-table-column>
+      <el-table-column label="来源" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.address }}
         </template>
       </el-table-column>
       <el-table-column label="剩余时间" width="150" align="center">
@@ -139,17 +154,34 @@
     </div>
 
     <el-dialog
-      title="编辑线索信息"
+      title="编辑信息"
       :visible.sync="dialogVisibleEdit"
       width="600px"
     >
       <el-form ref="form" :model="tableEditForm" label-width="80px">
-        <el-form-item label="线索名称">
+        <el-form-item label="姓名">
           <el-input v-model="tableEditForm.name" />
+        </el-form-item>
+        <el-form-item label="微信号">
+          <el-input
+            v-model="tableEditForm.wxNum"
+            placeholder="请输入微信号"
+          />
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-input
+            v-model="tableEditForm.edu"
+            placeholder="请输入学历"
+          />
+        </el-form-item>
+        <el-form-item label="来源">
+          <el-input
+            v-model="tableEditForm.address"
+            placeholder="请输入来源"
+          />
         </el-form-item>
         <el-form-item label="电话号">
           <el-input v-model="tableEditForm.phone" />
-
         </el-form-item>
         <el-form-item label="负责人">
           <el-select
@@ -180,23 +212,39 @@
     </el-dialog>
 
     <el-dialog
-      title="批量增加线索信息"
+      title="增加信息"
       :visible.sync="dialogVisibleAdd"
       width="600px"
     >
       <el-form ref="tableAddForm" :model="tableAddForm" label-width="100px">
-        <el-form-item label="线索名称前缀">
+        <el-form-item label="姓名前缀">
           <el-input
             v-model="tableAddForm.name"
-            placeholder="请输入线索名称前缀"
+            placeholder="请输入姓名前缀"
+          />
+        </el-form-item>
+        <el-form-item label="微信号">
+          <el-input
+            v-model="tableAddForm.wxNum"
+            placeholder="请输入微信号"
+          />
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-input
+            v-model="tableAddForm.edu"
+            placeholder="请输入学历"
+          />
+        </el-form-item>
+        <el-form-item label="来源">
+          <el-input
+            v-model="tableAddForm.address"
+            placeholder="请输入来源"
           />
         </el-form-item>
         <el-form-item label="电话号">
           <el-input
             v-model="tableAddForm.phone"
-            type="textarea"
-            placeholder="回车换行，按行分割"
-            rows="4"
+            placeholder="请输入电话号"
           />
         </el-form-item>
         <el-form-item label="负责人">
@@ -222,7 +270,7 @@
     </el-dialog>
 
     <el-dialog
-      title="批量转移线索"
+      title="批量转移"
       :visible.sync="dialogVisibleTransfer"
       width="600px"
     >
@@ -250,7 +298,7 @@
     </el-dialog>
 
     <el-drawer
-      title="线索详情"
+      title="详情"
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
@@ -265,7 +313,7 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
+import { clueAdds, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -336,7 +384,10 @@ export default {
       tableAddForm: {
         phone: '',
         ownerName: '',
-        name: ''
+        name: '',
+        wxNum: '',
+        edu: '',
+        address: ''
       },
       tableTransForm: {},
       tableList: [],
@@ -400,7 +451,7 @@ export default {
       this.dialogVisibleEdit = true
     },
     handleCloseEdit() {
-      const { name, ownerId, phone, status, id } = this.tableEditForm
+      const { name, ownerId, phone, status, id, wxNum, edu, address } = this.tableEditForm
       // 调用编辑接口
       clueEdit({
         name,
@@ -408,19 +459,25 @@ export default {
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
         status,
         phone,
-        id
+        id,
+        wxNum,
+        edu,
+        address
       }).then(response => {
         this.dialogVisibleEdit = false
         this.fetchData()
       })
     },
     handleAdd() {
-      const { name, ownerId, phone } = this.tableAddForm
-      clueAdd({
-        namePrefix: name,
+      const { name, ownerId, phone, wxNum, edu, address } = this.tableAddForm
+      clueAdds({
+        name,
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
-        phone: phone.split('\n')
+        phone,
+        wxNum,
+        edu,
+        address
       }).then(response => {
         this.dialogVisibleAdd = false
         this.fetchData()

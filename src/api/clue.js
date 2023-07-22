@@ -9,6 +9,15 @@ export function clueAdd(data) {
   })
 }
 
+// 线索批量添加
+export function clueAdds(data) {
+  return request({
+    url: '/back/clue/sadd',
+    method: 'post',
+    data
+  })
+}
+
 // 线索批量删除
 export function clueDel(data) {
   return request({

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加线索</el-button>
+        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -11,7 +11,7 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除线索</el-button>
+          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
         </el-popconfirm> -->
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
         <el-button
@@ -99,7 +99,7 @@
         width="55"
         align="center"
       />
-      <el-table-column label="线索名称" align="center">
+      <el-table-column label="名称" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -107,6 +107,21 @@
       <el-table-column label="电话号码" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.phone }}
+        </template>
+      </el-table-column>
+      <el-table-column label="微信号" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.wxNum }}
+        </template>
+      </el-table-column>
+      <el-table-column label="学历" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.edu }}
+        </template>
+      </el-table-column>
+      <el-table-column label="来源" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.address }}
         </template>
       </el-table-column>
       <el-table-column label="最新跟进" align="center">
@@ -149,12 +164,12 @@
     </div>
 
     <el-dialog
-      title="编辑线索信息"
+      title="编辑信息"
       :visible.sync="dialogVisibleEdit"
       width="600px"
     >
       <el-form ref="form" :model="tableEditForm" label-width="80px">
-        <el-form-item label="线索名称">
+        <el-form-item label="名称">
           <el-input v-model="tableEditForm.name" />
         </el-form-item>
         <el-form-item label="电话号">
@@ -190,15 +205,15 @@
     </el-dialog>
 
     <el-dialog
-      title="批量增加线索信息"
+      title="批量增加信息"
       :visible.sync="dialogVisibleAdd"
       width="600px"
     >
       <el-form ref="tableAddForm" :model="tableAddForm" label-width="100px">
-        <el-form-item label="线索名称前缀">
+        <el-form-item label="名称前缀">
           <el-input
             v-model="tableAddForm.name"
-            placeholder="请输入线索名称前缀"
+            placeholder="请输入名称前缀"
           />
         </el-form-item>
         <el-form-item label="电话号">
@@ -232,7 +247,7 @@
     </el-dialog>
 
     <el-dialog
-      title="批量转移线索"
+      title="批量转移"
       :visible.sync="dialogVisibleTransfer"
       width="600px"
     >
@@ -260,7 +275,7 @@
     </el-dialog>
 
     <el-drawer
-      title="线索详情"
+      title="详情"
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
@@ -465,7 +480,7 @@ export default {
       })
     },
     handleDelete() {
-      // 批量删除线索
+      // 批量删除
       clueDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {

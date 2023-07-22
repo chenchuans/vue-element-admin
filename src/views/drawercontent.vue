@@ -1,8 +1,17 @@
 <template>
   <div class="drawer">
     <el-form label-position="left" class="list" size="mini">
-      <el-form-item label="线索名称：">
+      <el-form-item label="名称：">
         <span>{{ drawerInfo.name }}</span>
+      </el-form-item>
+      <el-form-item label="微信号：">
+        <span>{{ drawerInfo.wxNum }}</span>
+      </el-form-item>
+      <el-form-item label="学历：">
+        <span>{{ drawerInfo.edu }}</span>
+      </el-form-item>
+      <el-form-item label="来源：">
+        <span>{{ drawerInfo.address }}</span>
       </el-form-item>
       <el-form-item label="跟进状态：">
         <span>{{ drawerInfo.status === 1 ? '已跟进' : '未跟进' }}</span>
@@ -34,7 +43,7 @@
                 type="primary"
                 :loading="operateBtnLoading"
                 @click="handleNextClue"
-              >下一条线索</el-button>
+              >下一条</el-button>
               <!-- <el-button
                 type="primary"
                 @click="handleCollect"
@@ -44,7 +53,7 @@
               type="primary"
               :loading="operateBtnLoading"
               @click="handlePrevClue"
-            >上一条线索</el-button>
+            >上一条</el-button>
           </div>
         </div>
         <el-table
@@ -122,7 +131,7 @@ export default {
       btnText: '增加跟进记录',
       followList: [],
       operateList: [],
-      textList: ['未接通/关机/空号/挂断', '明确不需要', '待会联系', '加微未通过', '加微未下载', '已下载', '苹果手机'],
+      textList: ['A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机'],
       isShowAllButton: this.$route.path.includes('public'),
       operateBtnLoading: false
     }
@@ -183,7 +192,7 @@ export default {
       const length = this.drawerList.length - 2
       if (currentIndex > length || currentIndex < 0) {
         this.$message({
-          message: '已经是当前页面最后一条线索，请退出线索详情进入下一页！',
+          message: '已经是当前页面最后一条，请退出详情进入下一页！',
           type: 'info'
         })
         return
@@ -195,7 +204,7 @@ export default {
       const currentIndex = this.drawerList.findIndex(item => item.id === this.drawerInfo.id)
       if (currentIndex < 1) {
         this.$message({
-          message: '已经是当前页面第一条线索，请退出线索详情进入上一页！',
+          message: '已经是当前页面第一条，请退出详情进入上一页！',
           type: 'info'
         })
         return
