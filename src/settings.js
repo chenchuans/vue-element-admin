@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '嘉晟CRM',
+  title: 'CRM',
 
   /**
    * @type {boolean} true | false

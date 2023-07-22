@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || '嘉晟CRM'
+const title = defaultSettings.title || 'CRM'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {
