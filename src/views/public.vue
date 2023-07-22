@@ -135,6 +135,12 @@
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="数据类型" width="100" align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
+          <el-tag v-else type="info">轮转数据</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="跟进状态" width="100" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
@@ -371,7 +377,7 @@ export default {
       drawer: false,
       drawerInfo: {},
       detailStatusIndex: 0,
-      textList: ['A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机']
+      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机']
     }
   },
   created() {

@@ -52,6 +52,20 @@ export const constantRoutes = [
   },
 
   {
+    path: '/lunzhuan',
+    component: Layout,
+    redirect: '/lunzhuan/index',
+    children: [
+      {
+        path: 'index',
+        name: '轮转数据',
+        component: () => import('@/views/lunzhuan'),
+        meta: { title: '轮转数据', icon: 'dashboard' }
+      }
+    ]
+  },
+
+  {
     path: '/collect',
     component: Layout,
     redirect: '/collect/index1',
@@ -120,14 +134,14 @@ export const constantRoutes = [
         path: 'index',
         name: '公海列表',
         component: () => import('@/views/public'),
-        meta: { title: '公海列表', icon: 'dashboard' },
-        roles: ['SUPER_ADMIN']
+        meta: { title: '公海列表', icon: 'dashboard' }
       },
       {
         path: 'all',
         name: '所有数据',
         component: () => import('@/views/alldata'),
-        meta: { title: '所有数据', icon: 'dashboard' }
+        meta: { title: '所有数据', icon: 'dashboard' },
+        roles: ['SUPER_ADMIN']
       },
       {
         path: 'library',

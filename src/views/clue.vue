@@ -124,6 +124,12 @@
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="数据类型" width="100" align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
+          <el-tag v-else type="info">轮转数据</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="跟进状态" width="100" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
@@ -477,7 +483,8 @@ export default {
         phone,
         wxNum,
         edu,
-        address
+        address,
+        isFirstCall: 1
       }).then(response => {
         this.dialogVisibleAdd = false
         this.fetchData()

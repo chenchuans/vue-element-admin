@@ -13,6 +13,9 @@
       <el-form-item label="来源：">
         <span>{{ drawerInfo.address }}</span>
       </el-form-item>
+      <el-form-item v-show="!isNaN(drawerInfo.isFirstCall)" label="数据类型：">
+        <span>{{ drawerInfo.isFirstCall === 1 ? '首咨数据' : '轮转数据' }}</span>
+      </el-form-item>
       <el-form-item label="跟进状态：">
         <span>{{ drawerInfo.status === 1 ? '已跟进' : '未跟进' }}</span>
       </el-form-item>

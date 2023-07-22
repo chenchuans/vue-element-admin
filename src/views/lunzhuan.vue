@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,77 +12,57 @@
           @onConfirm="handleDelete"
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
-        </el-popconfirm> -->
+        </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
-        <el-button
-          v-if="!isNoAdmin"
-          type="primary"
-          style="margin-left: 20px"
-          @click="handleDownload"
-        >下载</el-button>
       </div>
-      <div>
-        <el-date-picker
-          v-model="timeDate"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-          style="margin-right: 20px"
-          @change="handleDateChange"
+    </div>
+    <div style="margin-bottom: 20px">
+      <el-date-picker
+        v-model="timeDate"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        style="margin-right: 8px"
+        @change="handleDateChange"
+      />
+      <el-select
+        v-model="searchFlowerType"
+        placeholder="请选择跟进类型"
+        clearable
+        style="margin-right: 8px; width: 150px;"
+        @change="handleSearch"
+      >
+        <el-option
+          label="已跟进"
+          value="1"
         />
-        <el-select
-          v-model="searchFlowerType"
-          placeholder="请选择跟进类型"
-          clearable
-          style="margin-right: 8px;"
-          @change="handleSearch"
-        >
-          <el-option
-            label="已跟进"
-            value="1"
-          />
-          <el-option
-            label="未跟进"
-            value="0"
-          />
-        </el-select>
-        <el-select
-          v-model="searchSelectId"
-          placeholder="请选择负责人"
-          clearable
-          filterable
-          style="margin-right: 8px;"
-          @change="handleSearch"
-        >
-          <el-option
-            v-for="(item, index) in ownerList"
-            :key="index"
-            :label="item.ownerName"
-            :value="item.ownerId"
-          />
-        </el-select>
-        <el-select
-          v-model="detailStatusIndex"
-          placeholder="请选择详细跟进状态"
-          filterable
-          style="margin-right: 8px;"
-          @change="handleSelectDetailStatus"
-        >
-          <el-option
-            v-for="(item, index) in detailStatusList"
-            :key="index"
-            :label="item"
-            :value="index"
-          />
-        </el-select>
-        <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
-          <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
-        </el-input>
-      </div>
+        <el-option
+          label="未跟进"
+          value="0"
+        />
+      </el-select>
+      <el-select
+        v-model="searchSelectId"
+        placeholder="请选择负责人"
+        filterable
+        clearable
+        style="margin-right: 8px; width: 150px;"
+        @change="handleSearch"
+      >
+        <el-option
+          v-for="(item, index) in ownerList"
+          :key="index"
+          :label="item.ownerName"
+          :value="item.ownerId"
+        />
+      </el-select>
+      <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
+      </el-input>
     </div>
     <el-table
       v-loading="listLoading"
@@ -99,12 +79,12 @@
         width="55"
         align="center"
       />
-      <el-table-column label="名称" align="center">
+      <el-table-column label="姓名" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="电话号码" width="150" align="center">
+      <el-table-column label="电话" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.phone }}
         </template>
@@ -124,9 +104,19 @@
           {{ scope.row.address }}
         </template>
       </el-table-column>
+      <el-table-column label="剩余时间" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.remainderTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="最新跟进" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
+        </template>
+      </el-table-column>
+      <el-table-column label="跟进时间" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.followTime }}
         </template>
       </el-table-column>
       <el-table-column label="负责人" width="200" align="center">
@@ -146,16 +136,16 @@
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column class-name="status-col" label="操作" width="200" align="center">
+      <el-table-column class-name="status-col" label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
-            @click="handleEdit(scope.row)"
             style="margin-right: 10px"
             :disabled="isNoAdmin"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
     <div class="pagination">
       <el-pagination
@@ -175,12 +165,29 @@
       width="600px"
     >
       <el-form ref="form" :model="tableEditForm" label-width="80px">
-        <el-form-item label="名称">
+        <el-form-item label="姓名">
           <el-input v-model="tableEditForm.name" />
+        </el-form-item>
+        <el-form-item label="微信号">
+          <el-input
+            v-model="tableEditForm.wxNum"
+            placeholder="请输入微信号"
+          />
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-input
+            v-model="tableEditForm.edu"
+            placeholder="请输入学历"
+          />
+        </el-form-item>
+        <el-form-item label="来源">
+          <el-input
+            v-model="tableEditForm.address"
+            placeholder="请输入来源"
+          />
         </el-form-item>
         <el-form-item label="电话号">
           <el-input v-model="tableEditForm.phone" />
-
         </el-form-item>
         <el-form-item label="负责人">
           <el-select
@@ -211,31 +218,47 @@
     </el-dialog>
 
     <el-dialog
-      title="批量增加信息"
+      title="增加信息"
       :visible.sync="dialogVisibleAdd"
       width="600px"
     >
       <el-form ref="tableAddForm" :model="tableAddForm" label-width="100px">
-        <el-form-item label="名称前缀">
+        <el-form-item label="姓名前缀">
           <el-input
             v-model="tableAddForm.name"
-            placeholder="请输入名称前缀"
+            placeholder="请输入姓名前缀"
+          />
+        </el-form-item>
+        <el-form-item label="微信号">
+          <el-input
+            v-model="tableAddForm.wxNum"
+            placeholder="请输入微信号"
+          />
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-input
+            v-model="tableAddForm.edu"
+            placeholder="请输入学历"
+          />
+        </el-form-item>
+        <el-form-item label="来源">
+          <el-input
+            v-model="tableAddForm.address"
+            placeholder="请输入来源"
           />
         </el-form-item>
         <el-form-item label="电话号">
           <el-input
             v-model="tableAddForm.phone"
-            type="textarea"
-            placeholder="回车换行，按行分割"
-            rows="4"
+            placeholder="请输入电话号"
           />
         </el-form-item>
         <el-form-item label="负责人">
           <el-select
             v-model="tableAddForm.ownerId"
+            placeholder="请选择负责人"
             clearable
             filterable
-            placeholder="请选择负责人"
           >
             <el-option
               v-for="(item, index) in ownerList"
@@ -296,9 +319,9 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, allDataList, allDataDownload, allDataTrans, dataUsers } from '@/api/clue'
+import { clueAdds, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
 import drawercontent from './drawercontent'
-import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
+import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -348,7 +371,6 @@ export default {
           }
         }]
       },
-      timeDate: [],
       isNoAdmin: false,
       searchKey: '',
       searchSelectId: '',
@@ -368,25 +390,26 @@ export default {
       tableAddForm: {
         phone: '',
         ownerName: '',
-        name: ''
+        name: '',
+        wxNum: '',
+        edu: '',
+        address: ''
       },
       tableTransForm: {},
       tableList: [],
       listLoading: false,
-
+      timeDate: [],
       drawer: false,
-      drawerInfo: {},
-      detailStatusIndex: 0,
-      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机']
+      drawerInfo: {}
     }
   },
   created() {
-    this.timeDate = defaultStartEndDate()
+    this.timeDate = defaultStartEndDate(30)
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
-    this.isNoAdmin = userRole === 'SUPER_USER'
+    this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
     this.fetchData()
-    dataUsers({}).then(response => {
+    clueUsers({}).then(response => {
       this.ownerList = response.data.map(item => ({
         ownerName: item.userCnName || '暂无中文名',
         ownerId: item.id
@@ -396,8 +419,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      const { pagination } = this
-      const { page, size } = pagination
+      const { page, size } = this.pagination
 
       const req = {
         page,
@@ -415,11 +437,7 @@ export default {
         req.status = this.searchFlowerType
       }
 
-      if (this.detailStatusIndex) {
-        req.statusDetail = this.detailStatusIndex
-      }
-
-      allDataList(req).then(response => {
+      clueList(req).then(response => {
         this.tableList = response.data.data
         this.pagination.total = response.data.total
         this.listLoading = false
@@ -428,30 +446,10 @@ export default {
         this.listLoading = false
       })
     },
-    handleSearch() {
+    handleDateChange() {
       this.fetchData()
     },
-    handleDownload() {
-      const { page, size } = this.pagination
-      const req = {
-        page,
-        size,
-        phone: this.searchKey,
-        startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
-      }
-      if (this.searchSelectId) {
-        req.userId = this.searchSelectId
-      }
-
-      if (this.searchFlowerType) {
-        req.status = this.searchFlowerType
-      }
-      allDataDownload(req).then(response => {
-        download(response, '所有数据')
-      })
-    },
-    handleDateChange() {
+    handleSearch() {
       this.fetchData()
     },
     handleEdit(row) {
@@ -459,7 +457,7 @@ export default {
       this.dialogVisibleEdit = true
     },
     handleCloseEdit() {
-      const { name, ownerId, phone, status, id } = this.tableEditForm
+      const { name, ownerId, phone, status, id, wxNum, edu, address } = this.tableEditForm
       // 调用编辑接口
       clueEdit({
         name,
@@ -467,26 +465,33 @@ export default {
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
         status,
         phone,
-        id
+        id,
+        wxNum,
+        edu,
+        address
       }).then(response => {
         this.dialogVisibleEdit = false
         this.fetchData()
       })
     },
     handleAdd() {
-      const { name, ownerId, phone } = this.tableAddForm
-      clueAdd({
-        namePrefix: name,
+      const { name, ownerId, phone, wxNum, edu, address } = this.tableAddForm
+      clueAdds({
+        name,
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
-        phone: phone.split('\n')
+        phone,
+        wxNum,
+        edu,
+        address,
+        isFirstCall: 0
       }).then(response => {
         this.dialogVisibleAdd = false
         this.fetchData()
       })
     },
     handleDelete() {
-      // 批量删除
+      // 批量删除线索
       clueDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {
@@ -496,7 +501,7 @@ export default {
     handleTransfer() {
       // 批量修改跟进
       const { ownerId } = this.tableTransForm
-      allDataTrans({
+      clueTrans({
         id: this.multipleSelection.map(item => item.id),
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName
@@ -513,6 +518,10 @@ export default {
       if (column.type === 'selection' || column.label === '操作') return
       this.drawer = true
       this.drawerInfo = JSON.parse(JSON.stringify(row))
+      // 上报电话
+      phoneAdd({
+        phone: row.phone
+      })
     },
     handleSizeChange(size) {
       this.pagination.size = size
@@ -520,9 +529,6 @@ export default {
     },
     handleCurrentChange(page) {
       this.pagination.page = page
-      this.fetchData()
-    },
-    handleSelectDetailStatus() {
       this.fetchData()
     }
   }
@@ -534,9 +540,14 @@ export default {
   justify-content: space-between;
   margin-bottom: 20px;
 }
+.title {
+  line-height: 40px;
+  color: #fe3549;
+  margin: 0;
+}
 .app-container-top-left {
   display: flex;
-  // justify-content: space-between;
+  justify-content: space-between;
   justify-items: center;
   width: 400px;
 }
