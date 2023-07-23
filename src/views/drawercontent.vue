@@ -7,11 +7,17 @@
       <el-form-item label="微信号：">
         <span>{{ drawerInfo.wxNum }}</span>
       </el-form-item>
+      <el-form-item label="年龄：">
+        <span>{{ drawerInfo.age }}</span>
+      </el-form-item>
       <el-form-item label="学历：">
         <span>{{ drawerInfo.edu }}</span>
       </el-form-item>
-      <el-form-item label="来源：">
+      <el-form-item label="报考省份：">
         <span>{{ drawerInfo.address }}</span>
+      </el-form-item>
+      <el-form-item label="城市：">
+        <span>{{ drawerInfo.city }}</span>
       </el-form-item>
       <el-form-item v-show="!isNaN(drawerInfo.isFirstCall)" label="数据类型：">
         <span>{{ drawerInfo.isFirstCall === 1 ? '首咨数据' : '轮转数据' }}</span>

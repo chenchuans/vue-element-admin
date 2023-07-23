@@ -3,6 +3,7 @@
     <div class="app-container-top">
       <div class="app-container-top-left">
         <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdds = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -99,9 +100,19 @@
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="来源" width="150" align="center">
+      <el-table-column label="年龄" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.age }}
+        </template>
+      </el-table-column>
+      <el-table-column label="报考省份" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
+        </template>
+      </el-table-column>
+      <el-table-column label="城市" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.city }}
         </template>
       </el-table-column>
       <el-table-column label="剩余时间" width="150" align="center">
@@ -180,10 +191,22 @@
             placeholder="请输入学历"
           />
         </el-form-item>
-        <el-form-item label="来源">
+        <el-form-item label="年龄">
+          <el-input
+            v-model="tableEditForm.age"
+            placeholder="请输入年龄"
+          />
+        </el-form-item>
+        <el-form-item label="报考省份">
           <el-input
             v-model="tableEditForm.address"
-            placeholder="请输入来源"
+            placeholder="请输入报考省份"
+          />
+        </el-form-item>
+        <el-form-item label="城市">
+          <el-input
+            v-model="tableAddForm.city"
+            placeholder="请输入城市"
           />
         </el-form-item>
         <el-form-item label="电话号">
@@ -241,10 +264,22 @@
             placeholder="请输入学历"
           />
         </el-form-item>
-        <el-form-item label="来源">
+        <el-form-item label="年龄">
+          <el-input
+            v-model="tableAddForm.age"
+            placeholder="请输入年龄"
+          />
+        </el-form-item>
+        <el-form-item label="报考省份">
           <el-input
             v-model="tableAddForm.address"
-            placeholder="请输入来源"
+            placeholder="请输入报考省份"
+          />
+        </el-form-item>
+        <el-form-item label="城市">
+          <el-input
+            v-model="tableAddForm.city"
+            placeholder="请输入城市"
           />
         </el-form-item>
         <el-form-item label="电话号">
@@ -272,6 +307,42 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisibleAdd = false">取 消</el-button>
         <el-button type="primary" @click="handleAdd">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="批量增加信息"
+      :visible.sync="dialogVisibleAdds"
+      width="600px"
+    >
+      <el-form ref="tableAddForms" :model="tableAddForms" label-width="100px">
+        <el-form-item label="数据">
+          <el-input
+            v-model="tableAddForms.phone"
+            type="textarea"
+            placeholder="回车换行，按行分割"
+            rows="4"
+          />
+        </el-form-item>
+        <el-form-item label="负责人">
+          <el-select
+            v-model="tableAddForms.ownerId"
+            placeholder="请选择负责人"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="(item, index) in ownerList"
+              :key="index"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleAdds = false">取 消</el-button>
+        <el-button type="primary" @click="handleAdds">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -319,7 +390,7 @@
 </template>
 
 <script>
-import { clueAdds, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
+import { clueAdds, clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -377,6 +448,7 @@ export default {
       searchFlowerType: '',
       dialogVisibleEdit: false,
       dialogVisibleAdd: false,
+      dialogVisibleAdds: false,
       dialogVisibleTransfer: false,
       pagination: {
         page: 1,
@@ -394,6 +466,11 @@ export default {
         wxNum: '',
         edu: '',
         address: ''
+      },
+      tableAddForms: {
+        phone: '',
+        ownerName: '',
+        name: ''
       },
       tableTransForm: {},
       tableList: [],
@@ -425,7 +502,7 @@ export default {
         page,
         size,
         phone: this.searchKey,
-        isFirstCall: 0,
+        isFirstCall: 1,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1])
       }
@@ -458,33 +535,31 @@ export default {
       this.dialogVisibleEdit = true
     },
     handleCloseEdit() {
-      const { name, ownerId, phone, status, id, wxNum, edu, address } = this.tableEditForm
       // 调用编辑接口
-      clueEdit({
-        name,
-        ownerId,
-        ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
-        status,
-        phone,
-        id,
-        wxNum,
-        edu,
-        address
-      }).then(response => {
+      const req = Object.assign(this.tableEditForm, {
+        ownerName: this.ownerList.find(item => item.ownerId === this.tableEditForm.ownerId).ownerName
+      })
+      clueEdit(req).then(response => {
         this.dialogVisibleEdit = false
         this.fetchData()
       })
     },
     handleAdd() {
-      const { name, ownerId, phone, wxNum, edu, address } = this.tableAddForm
-      clueAdds({
-        name,
+      const req = Object.assign(this.tableEditForm, {
+        ownerName: this.ownerList.find(item => item.ownerId === this.tableAddForm.ownerId).ownerName,
+        isFirstCall: 0
+      })
+      clueAdds(req).then(response => {
+        this.dialogVisibleAdd = false
+        this.fetchData()
+      })
+    },
+    handleAdds() {
+      const { ownerId, phone } = this.tableAddForms
+      clueAdd({
         ownerId,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
         phone,
-        wxNum,
-        edu,
-        address,
         isFirstCall: 0
       }).then(response => {
         this.dialogVisibleAdd = false

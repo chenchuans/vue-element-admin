@@ -108,14 +108,24 @@
           {{ scope.row.wxNum }}
         </template>
       </el-table-column>
+      <el-table-column label="年龄" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.age }}
+        </template>
+      </el-table-column>
       <el-table-column label="学历" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="来源" width="150" align="center">
+      <el-table-column label="报考省份" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
+        </template>
+      </el-table-column>
+      <el-table-column label="城市" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.city }}
         </template>
       </el-table-column>
       <el-table-column label="电话号码" width="150" align="center">

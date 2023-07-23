@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button>
+        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button> -->
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -11,8 +11,8 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
-        </el-popconfirm> -->
+          <el-button v-if="isAdmin2" slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
+        </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
         <el-button
           v-if="isAdmin2"
@@ -115,9 +115,19 @@
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="来源" width="150" align="center">
+      <el-table-column label="年龄" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.age }}
+        </template>
+      </el-table-column>
+      <el-table-column label="报考省份" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
+        </template>
+      </el-table-column>
+      <el-table-column label="城市" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.city }}
         </template>
       </el-table-column>
       <el-table-column label="电话号码" width="150" align="center">
@@ -297,7 +307,7 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, publicList, publicDownload, publicTrans, dataUsers } from '@/api/clue'
+import { clueAdd, publicDel, clueEdit, publicList, publicDownload, publicTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -385,7 +395,7 @@ export default {
     this.timeDate = defaultStartEndDate()
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'SUPER_USER'
-    this.isAdmin2 = userRole === 'SUPER_ADMIN' || userRole === 'COMMON_ADMIN'
+    this.isAdmin2 = userRole === 'SUPER_ADMIN'
     this.pagination = pagination
     this.fetchData()
     dataUsers({}).then(response => {
@@ -466,10 +476,8 @@ export default {
       clueEdit({
         name,
         ownerId,
-        ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
-        status,
-        phone,
-        id
+        phone, status, id,
+        ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName
       }).then(response => {
         this.dialogVisibleEdit = false
         this.fetchData()
@@ -478,8 +486,7 @@ export default {
     handleAdd() {
       const { name, ownerId, phone } = this.tableAddForm
       clueAdd({
-        namePrefix: name,
-        ownerId,
+        name,
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName,
         phone: phone.split('\n')
       }).then(response => {
@@ -489,7 +496,7 @@ export default {
     },
     handleDelete() {
       // 批量删除
-      clueDel({
+      publicDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {
         this.fetchData()

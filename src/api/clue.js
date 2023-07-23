@@ -27,6 +27,15 @@ export function clueDel(data) {
   })
 }
 
+// 删除
+export function publicDel(data) {
+  return request({
+    url: '/back/clue/public/del',
+    method: 'post',
+    data
+  })
+}
+
 // 线索编辑
 export function clueEdit(data) {
   return request({
