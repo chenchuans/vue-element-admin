@@ -100,6 +100,11 @@
           {{ scope.row.edu }}
         </template>
       </el-table-column>
+      <el-table-column label="年龄" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.age }}
+        </template>
+      </el-table-column>
       <el-table-column label="报考省份" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}

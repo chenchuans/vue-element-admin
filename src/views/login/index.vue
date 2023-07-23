@@ -101,7 +101,7 @@ export default {
       return /[1][0-9][0-9]{9}$/.test(phone)
     },
     handleChangeLogin() {
-      // this.currentLoginType = this.currentLoginType === 'account' ? 'phone' : 'account'
+      this.currentLoginType = this.currentLoginType === 'account' ? 'phone' : 'account'
     },
     handleLogin() {
       if (this.currentLoginType === 'phone' && !this.loginForm.code) {
