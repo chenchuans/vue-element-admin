@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 线索批量添加
+// 批量添加
 export function clueAdd(data) {
   return request({
     url: '/back/clue/add',
@@ -9,7 +9,7 @@ export function clueAdd(data) {
   })
 }
 
-// 线索批量添加
+// 批量添加
 export function clueAdds(data) {
   return request({
     url: '/back/clue/sadd',
@@ -18,7 +18,7 @@ export function clueAdds(data) {
   })
 }
 
-// 线索批量删除
+// 批量删除
 export function clueDel(data) {
   return request({
     url: '/back/clue/del',
@@ -36,7 +36,7 @@ export function publicDel(data) {
   })
 }
 
-// 线索编辑
+// 编辑
 export function clueEdit(data) {
   return request({
     url: '/back/clue/edit',
@@ -45,7 +45,7 @@ export function clueEdit(data) {
   })
 }
 
-// 展示所有线索
+// 展示所有
 export function clueList(data) {
   return request({
     url: '/back/clue/list',
@@ -117,7 +117,7 @@ export function zaiDataDownload(data) {
   })
 }
 
-// 线索转移
+// 转移
 export function clueTrans(data) {
   return request({
     url: '/back/clue/trans',
@@ -153,7 +153,7 @@ export function dataUsers(data) {
   })
 }
 
-// 线索-负责人下拉列表
+// -负责人下拉列表
 export function clueUsers(data) {
   return request({
     url: '/back/clue/users',
@@ -162,7 +162,7 @@ export function clueUsers(data) {
   })
 }
 
-// 线索打开侧弹窗，上报电话
+// 打开侧弹窗，上报电话
 export function phoneAdd(data) {
   return request({
     url: '/back/followup/person/phone/add',

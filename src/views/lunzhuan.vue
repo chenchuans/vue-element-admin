@@ -567,7 +567,7 @@ export default {
       })
     },
     handleDelete() {
-      // 批量删除线索
+      // 批量删除
       clueDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {

@@ -83,7 +83,7 @@ export default {
     return {
       countDown: 0,
       timeIntervalId: null,
-      currentLoginType: 'account',
+      currentLoginType: 'phone',
       loginForm: {
         username: '',
         password: '',
