@@ -24,6 +24,12 @@
             @click="handleEdit(scope.row)"
           >主管设置</el-button>
           <el-button
+            size="small"
+            type="primary"
+            style="margin-right: 30px"
+            @click="openEditName(scope.row)"
+          >编辑部门名称</el-button>
+          <el-button
             v-if="scope.row.userAdd"
             size="small"
             @click="handleEditSetting(scope.row)"
@@ -56,6 +62,22 @@
     </el-dialog>
 
     <el-dialog
+      title="编辑部门名称"
+      :visible.sync="dialogNameVisible"
+      width="400px"
+    >
+      <el-form ref="form" :model="formNameInfo" label-width="100px">
+        <el-form-item label="部门名称">
+          <el-input v-model="formNameInfo.deptName" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogNameVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleNameClose">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       title="下属设置"
       :visible.sync="dialogVisibleSetting"
       width="800px"
@@ -81,14 +103,14 @@
         <el-table-column class-name="status-col" label="操作" align="center">
           <template slot-scope="scope">
             <el-popconfirm
-              confirm-button-text='好的'
-              cancel-button-text='不用了'
+              confirm-button-text="好的"
+              cancel-button-text="不用了"
               icon="el-icon-info"
               icon-color="red"
               title="确认要移除吗？"
               @onConfirm="handleDelete(scope.row)"
             >
-              <el-button type="danger" size="small" slot="reference">移除</el-button>
+              <el-button slot="reference" type="danger" size="small">移除</el-button>
             </el-popconfirm>
           </template>
         </el-table-column>
@@ -102,16 +124,18 @@
 </template>
 
 <script>
-import { editDeptAdmin, deptList, userList, addDeptStaff, delDeptStaff, listDeptStaff } from '@/api/user'
+import { editDeptAdmin, deptList, userList, addDeptStaff, delDeptStaff, listDeptStaff, editDeptName } from '@/api/user'
 
 export default {
   data() {
     return {
       dialogVisible: false,
       dialogVisibleSetting: false,
+      dialogNameVisible: false,
       pagination: {},
       tableList: [],
       formInfo: {},
+      formNameInfo: {},
       adminList: [],
       currentStaffId: 0,
       currentStaffRow: {},
@@ -146,6 +170,20 @@ export default {
         this.tableList = []
       })
     },
+    openEditName(row) {
+      // 编辑名称
+      this.formNameInfo = JSON.parse(JSON.stringify(row))
+      this.dialogNameVisible = true
+    },
+    handleNameClose() {
+      editDeptName({
+        deptName: this.formNameInfo.deptName,
+        id: this.formNameInfo.id
+      }).then(response => {
+        this.dialogNameVisible = false
+        this.fetchData()
+      })
+    },
     handleEdit(row) {
       // 主管设置
       this.formInfo = JSON.parse(JSON.stringify(row))
@@ -177,7 +215,7 @@ export default {
     handleDelete(row) {
       delDeptStaff({
         userId: row.id,
-        deptId: this.currentStaffId,
+        deptId: this.currentStaffId
       }).then(response => {
         this.getStaffList(this.currentStaffRow)
       })

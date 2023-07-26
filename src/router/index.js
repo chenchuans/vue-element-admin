@@ -184,6 +184,21 @@ export const constantRoutes = [
     // roles: 向下管理
   },
 
+  {
+    path: '/admintab',
+    component: Layout,
+    redirect: '/admintab/index',
+    children: [
+      {
+        path: 'index',
+        name: '管理看板',
+        component: () => import('@/views/admintab'),
+        meta: { title: '管理看板', icon: 'dashboard' }
+      }
+    ],
+    roles: ['SUPER_ADMIN']
+  },
+
   // {
   //   path: '/achieve',
   //   component: Layout,

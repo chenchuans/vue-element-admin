@@ -18,6 +18,52 @@ export function getNowFormatDate(da) {
   return currentdate
 }
 
+// 获取当前时间
+export function getCurrentTime() {
+  // 创建对象
+  const date = new Date()
+  // 获取年份
+  const y = date.getFullYear()
+  // 获取月份  返回0-11
+  let m = date.getMonth() + 1
+  // 获取日
+  let d = date.getDate()
+  // 获取星期几  返回0-6   (0=星期天)
+  // let w = date.getDay();
+  // 星期几
+  // let ww = ' 星期' + '日一二三四五六'.charAt(date.getDay());
+  // 时
+  let h = date.getHours()
+  // 分
+  let minute = date.getMinutes()
+  // 秒
+  let s = date.getSeconds()
+  // 毫秒
+  let sss = date.getMilliseconds()
+
+  if (m < 10) {
+    m = '0' + m
+  }
+  if (d < 10) {
+    d = '0' + d
+  }
+  if (h < 10) {
+    h = '0' + h
+  }
+  if (minute < 10) {
+    minute = '0' + minute
+  }
+  if (s < 10) {
+    s = '0' + s
+  }
+  if (sss < 10) {
+    sss = '00' + sss
+  } else if (sss < 100) {
+    sss = '0' + sss
+  }
+  return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + s
+}
+
 /**
  * @param {number} date
  * @returns {Array}

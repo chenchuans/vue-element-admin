@@ -109,6 +109,15 @@ export function editDeptAdmin(data) {
   })
 }
 
+//  编辑名称
+export function editDeptName(data) {
+  return request({
+    url: '/back/dept/update',
+    method: 'post',
+    data
+  })
+}
+
 // 添加部门人员关系
 export function addDeptStaff(data) {
   return request({
@@ -136,3 +145,11 @@ export function listDeptStaff(data) {
   })
 }
 // -------------------------部门管理---------------------------------------
+
+export function tabList(data) {
+  return request({
+    url: '/back/tab/list',
+    method: 'post',
+    data
+  })
+}
