@@ -253,7 +253,9 @@
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
+      :modal="false"
     >
+      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"

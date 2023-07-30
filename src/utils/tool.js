@@ -19,9 +19,9 @@ export function getNowFormatDate(da) {
 }
 
 // 获取当前时间
-export function getCurrentTime() {
+export function getCurrentTime(da) {
   // 创建对象
-  const date = new Date()
+  const date = new Date(da)
   // 获取年份
   const y = date.getFullYear()
   // 获取月份  返回0-11

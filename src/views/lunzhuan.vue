@@ -3,7 +3,8 @@
     <div class="app-container-top">
       <div class="app-container-top-left">
         <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdds = true">批量添加</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleUpload = true">上传</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-right: 10px;" @click="dialogVisibleAdds = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,9 +13,9 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
+          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length" style="margin-right: 10px;">批量删除</el-button>
         </el-popconfirm>
-        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" style="margin-right: 10px;" @click="dialogVisibleTransfer = true">批量转移</el-button>
       </div>
     </div>
     <div style="margin-bottom: 20px">
@@ -152,7 +153,6 @@
           <el-button
             size="small"
             style="margin-right: 10px"
-            :disabled="isNoAdmin"
             @click="handleEdit(scope.row)"
           >编辑</el-button>
         </template>
@@ -169,76 +169,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
-    <el-dialog
-      title="编辑信息"
-      :visible.sync="dialogVisibleEdit"
-      width="600px"
-    >
-      <el-form ref="form" :model="tableEditForm" label-width="80px">
-        <el-form-item label="姓名">
-          <el-input v-model="tableEditForm.name" />
-        </el-form-item>
-        <el-form-item label="微信号">
-          <el-input
-            v-model="tableEditForm.wxNum"
-            placeholder="请输入微信号"
-          />
-        </el-form-item>
-        <el-form-item label="学历">
-          <el-input
-            v-model="tableEditForm.edu"
-            placeholder="请输入学历"
-          />
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input
-            v-model="tableEditForm.age"
-            placeholder="请输入年龄"
-          />
-        </el-form-item>
-        <el-form-item label="报考省份">
-          <el-input
-            v-model="tableEditForm.address"
-            placeholder="请输入报考省份"
-          />
-        </el-form-item>
-        <el-form-item label="城市">
-          <el-input
-            v-model="tableAddForm.city"
-            placeholder="请输入城市"
-          />
-        </el-form-item>
-        <el-form-item label="电话号">
-          <el-input v-model="tableEditForm.phone" />
-        </el-form-item>
-        <el-form-item label="负责人">
-          <el-select
-            v-model="tableEditForm.ownerId"
-            clearable
-            filterable
-            placeholder="请选择负责人"
-          >
-            <el-option
-              v-for="(item, index) in ownerList"
-              :key="index"
-              :label="item.ownerName"
-              :value="item.ownerId"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="跟进状态">
-          <el-radio-group v-model="tableEditForm.status">
-            <el-radio :label="0">未跟进</el-radio>
-            <el-radio :label="1">已跟进</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="handleCloseEdit">确 定</el-button>
-      </span>
-    </el-dialog>
 
     <el-dialog
       title="增加信息"
@@ -311,6 +241,37 @@
     </el-dialog>
 
     <el-dialog
+      title="EXCEL上传"
+      :visible.sync="dialogVisibleUpload"
+      width="600px"
+    >
+      <el-form ref="tableAddForms" :model="tableAddForms" label-width="150px">
+        <el-form-item label="上传Excel文件">
+          <input type="file" @change="uploadData">
+        </el-form-item>
+        <el-form-item label="负责人">
+          <el-select
+            v-model="tableAddForms.ownerId"
+            placeholder="请选择负责人"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="(item, index) in ownerList"
+              :key="index"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleUpload = false">取 消</el-button>
+        <el-button type="primary" @click="handledialogVisibleUpload">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       title="批量增加信息"
       :visible.sync="dialogVisibleAdds"
       width="600px"
@@ -379,7 +340,9 @@
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
+      :modal="false"
     >
+      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
@@ -390,7 +353,7 @@
 </template>
 
 <script>
-import { clueAdds, clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
+import { clueAdds, clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, upload } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -450,6 +413,8 @@ export default {
       dialogVisibleAdd: false,
       dialogVisibleAdds: false,
       dialogVisibleTransfer: false,
+      dialogVisibleUpload: false,
+      uploadFile: {},
       pagination: {
         page: 1,
         size: 50,
@@ -564,6 +529,19 @@ export default {
       }).then(response => {
         this.dialogVisibleAdd = false
         this.fetchData()
+      })
+    },
+    uploadData(event) {
+      this.uploadFile = event.target.files[0]
+    },
+    handledialogVisibleUpload() {
+      const formData = new FormData()
+      formData.append('file', this.uploadFile)
+      const ownerName = this.ownerList.find(item => item.ownerId === this.tableAddForms.ownerId).ownerName
+      const paramsUrl = `ownerName=${ownerName}&isFirstCall=0&ownerId=
+        ${this.tableAddForms.ownerId}`
+      upload(formData, paramsUrl).then(response => {
+        this.dialogVisibleUpload = false
       })
     },
     handleDelete() {

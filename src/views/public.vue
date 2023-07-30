@@ -67,6 +67,21 @@
           />
         </el-select>
         <el-select
+          v-model="searchData"
+          placeholder="请选择数据类型"
+          filterable
+          clearable
+          style="margin-right: 8px;"
+          @change="handleChangeData"
+        >
+          <el-option
+            v-for="(item, index) in dataTypeList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <el-select
           v-model="detailStatusIndex"
           placeholder="请选择详细跟进状态"
           filterable
@@ -296,7 +311,9 @@
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
+      :modal="false"
     >
+      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
@@ -373,6 +390,12 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
+      dataTypeList: [
+        { id: -1, name: '所有' },
+        { id: 1, name: '首咨数据' },
+        { id: 0, name: '轮转数据' }
+      ],
+      searchData: -1,
       ownerList: [],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
@@ -419,6 +442,10 @@ export default {
         endTime: getNowFormatDate(this.timeDate[1])
       }
 
+      if (this.searchData !== -1) {
+        req.isFirstCall = this.searchData
+      }
+
       if (this.searchSelectId) {
         req.userId = this.searchSelectId
       }
@@ -461,6 +488,9 @@ export default {
       })
     },
     handleDateChange() {
+      this.fetchData()
+    },
+    handleChangeData() {
       this.fetchData()
     },
     handleSearch() {

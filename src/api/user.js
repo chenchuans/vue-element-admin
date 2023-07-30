@@ -153,3 +153,19 @@ export function tabList(data) {
     data
   })
 }
+
+export function tabdetailList(data) {
+  return request({
+    url: '/back/tab/adminData',
+    method: 'post',
+    data
+  })
+}
+
+export function usertabList(data) {
+  return request({
+    url: '/back/tab/userData',
+    method: 'post',
+    data
+  })
+}

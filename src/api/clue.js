@@ -27,6 +27,15 @@ export function clueDel(data) {
   })
 }
 
+// 批量删除
+export function allDataDel(data) {
+  return request({
+    url: 'back/clue/public/del',
+    method: 'post',
+    data
+  })
+}
+
 // 删除
 export function publicDel(data) {
   return request({
@@ -126,6 +135,15 @@ export function clueTrans(data) {
   })
 }
 
+// 转移
+export function clueAvgTrans(data) {
+  return request({
+    url: '/back/clue/avg/trans ',
+    method: 'post',
+    data
+  })
+}
+
 // 批量公海转移
 export function publicTrans(data) {
   return request({
@@ -170,3 +188,12 @@ export function phoneAdd(data) {
     data
   })
 }
+
+export function upload(data, params) {
+  return request({
+    url: `/back/clue/excel/add?${params}`,
+    method: 'post',
+    data
+  })
+}
+export const uploadUrl = 'http://localhost:8080/crm/back/clue/excel/add?isFirstCall=1&ownerId=1&ownerName=admin'

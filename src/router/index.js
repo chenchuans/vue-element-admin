@@ -147,8 +147,7 @@ export const constantRoutes = [
         path: 'library',
         name: '在库数据',
         component: () => import('@/views/libraryData'),
-        meta: { title: '在库数据', icon: 'dashboard' },
-        roles: ['SUPER_ADMIN']
+        meta: { title: '在库数据', icon: 'dashboard' }
       }
     ]
   },
@@ -197,6 +196,20 @@ export const constantRoutes = [
       }
     ],
     roles: ['SUPER_ADMIN']
+  },
+
+  {
+    path: '/usertab',
+    component: Layout,
+    redirect: '/usertab/index',
+    children: [
+      {
+        path: 'index',
+        name: '员工看板',
+        component: () => import('@/views/usertab'),
+        meta: { title: '员工看板', icon: 'dashboard' }
+      }
+    ]
   },
 
   // {

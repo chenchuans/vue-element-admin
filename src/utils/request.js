@@ -6,9 +6,9 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   // baseURL: 'http://123.56.23.78:80/jstime', // 线上环境
   // baseURL: 'http://jstime.durl.ga:4445/jstime', // 测试环境
-  // baseURL: 'http://192.168.10.17:8080/crm', // 本地环境
-  baseURL: 'http://47.98.216.82:8080/crm', // 本地环境
-  timeout: 20000 // request timeout
+  baseURL: 'http://192.168.10.16:8080/crm', // 本地环境
+  // baseURL: 'http://47.98.216.82:8081/crm', // 本地环境
+  timeout: 40000 // request timeout
 })
 // request interceptor
 service.interceptors.request.use(
@@ -22,6 +22,10 @@ service.interceptors.request.use(
       config.responseType = 'arraybuffer' // arraybuffer是js中提供处理二进制的接口
       config.headers['responseType'] = 'arraybuffer'
     }
+    if (config.url.includes('/excel')) {
+      config.headers['Content-type'] = 'multipart/form-data'
+    }
+
     return config
   },
   error => {

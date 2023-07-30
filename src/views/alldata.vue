@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button>
+        <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button> -->
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,7 +12,7 @@
           @onConfirm="handleDelete"
         >
           <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
-        </el-popconfirm> -->
+        </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
         <el-button
           v-if="!isNoAdmin"
@@ -63,6 +63,21 @@
             :key="index"
             :label="item.ownerName"
             :value="item.ownerId"
+          />
+        </el-select>
+        <el-select
+          v-model="searchData"
+          placeholder="请选择数据类型"
+          filterable
+          clearable
+          style="margin-right: 8px;"
+          @change="handleChangeData"
+        >
+          <el-option
+            v-for="(item, index) in dataTypeList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
           />
         </el-select>
         <el-select
@@ -295,7 +310,9 @@
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
+      :modal="false"
     >
+      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
@@ -306,7 +323,7 @@
 </template>
 
 <script>
-import { clueAdd, clueDel, clueEdit, allDataList, allDataDownload, allDataTrans, dataUsers } from '@/api/clue'
+import { clueAdd, allDataDel, clueEdit, allDataList, allDataDownload, allDataTrans, dataUsers } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -372,6 +389,12 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
+      dataTypeList: [
+        { id: -1, name: '所有' },
+        { id: 1, name: '首咨数据' },
+        { id: 0, name: '轮转数据' }
+      ],
+      searchData: -1,
       ownerList: [],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
@@ -415,6 +438,10 @@ export default {
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
         endTime: getNowFormatDate(this.timeDate[1])
+      }
+
+      if (this.searchData !== -1) {
+        req.isFirstCall = this.searchData
       }
 
       if (this.searchSelectId) {
@@ -495,9 +522,12 @@ export default {
         this.fetchData()
       })
     },
+    handleChangeData() {
+      this.fetchData()
+    },
     handleDelete() {
       // 批量删除
-      clueDel({
+      allDataDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {
         this.fetchData()

@@ -3,7 +3,8 @@
     <div class="app-container-top">
       <div class="app-container-top-left">
         <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdds = true">批量添加</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleUpload = true">上传</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="dialogVisibleAdds = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -12,9 +13,11 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
+          <el-button slot="reference" style="margin-left: 20px" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
         </el-popconfirm>
-        <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogAvgVisibleTransfer = true">平均转移</el-button>
       </div>
     </div>
     <div style="margin-bottom: 20px">
@@ -152,7 +155,6 @@
           <el-button
             size="small"
             style="margin-right: 10px"
-            :disabled="isNoAdmin"
             @click="handleEdit(scope.row)"
           >编辑</el-button>
         </template>
@@ -347,6 +349,37 @@
     </el-dialog>
 
     <el-dialog
+      title="EXCEL上传"
+      :visible.sync="dialogVisibleUpload"
+      width="600px"
+    >
+      <el-form ref="tableAddForms" :model="tableAddForms" label-width="150px">
+        <el-form-item label="上传Excel文件">
+          <input type="file" @change="uploadData">
+        </el-form-item>
+        <el-form-item label="负责人">
+          <el-select
+            v-model="tableAddForms.ownerId"
+            placeholder="请选择负责人"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="(item, index) in ownerList"
+              :key="index"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleUpload = false">取 消</el-button>
+        <el-button type="primary" @click="handledialogVisibleUpload">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       title="批量转移"
       :visible.sync="dialogVisibleTransfer"
       width="600px"
@@ -374,12 +407,43 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      title="线索转移"
+      :visible.sync="dialogAvgVisibleTransfer"
+      width="600px"
+    >
+      <el-form ref="tableAvgTransForm" :model="tabAvgTransForm" label-width="80px">
+        <el-form-item label="负责人">
+          <el-select
+            v-model="tabAvgTransForm.ownerId"
+            clearable
+            filterable
+            multiple
+            placeholder="请选择负责人"
+          >
+            <el-option
+              v-for="(item, index) in ownerList"
+              :key="index"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAvgVisibleTransfer = false">取 消</el-button>
+        <el-button type="primary" @click="handleAvgVisibleTransfer">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-drawer
       title="详情"
       :visible.sync="drawer"
       size="70%"
       direction="rtl"
+      :modal="false"
     >
+      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
@@ -390,7 +454,7 @@
 </template>
 
 <script>
-import { clueAdds, clueAdd, clueDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd } from '@/api/clue'
+import { clueAdds, clueAdd, publicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -450,6 +514,8 @@ export default {
       dialogVisibleAdd: false,
       dialogVisibleAdds: false,
       dialogVisibleTransfer: false,
+      dialogAvgVisibleTransfer: false,
+      dialogVisibleUpload: false,
       pagination: {
         page: 1,
         size: 50,
@@ -472,6 +538,8 @@ export default {
         ownerName: '',
         name: ''
       },
+      uploadFile: {},
+      tabAvgTransForm: {},
       tableTransForm: {},
       tableList: [],
       listLoading: false,
@@ -564,9 +632,22 @@ export default {
         this.fetchData()
       })
     },
+    uploadData(event) {
+      this.uploadFile = event.target.files[0]
+    },
+    handledialogVisibleUpload() {
+      const formData = new FormData()
+      formData.append('file', this.uploadFile)
+      const ownerName = this.ownerList.find(item => item.ownerId === this.tableAddForms.ownerId).ownerName
+      const paramsUrl = `ownerName=${ownerName}&isFirstCall=1&ownerId=
+        ${this.tableAddForms.ownerId}`
+      upload(formData, paramsUrl).then(response => {
+        this.dialogVisibleUpload = false
+      })
+    },
     handleDelete() {
       // 批量删除
-      clueDel({
+      publicDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {
         this.fetchData()
@@ -582,6 +663,17 @@ export default {
       }).then(response => {
         this.fetchData()
         this.dialogVisibleTransfer = false
+      })
+    },
+    handleAvgVisibleTransfer() {
+      // 批量修改跟进
+      const { ownerId } = this.tabAvgTransForm
+      clueAvgTrans({
+        id: this.multipleSelection.map(item => item.id),
+        ownerId
+      }).then(response => {
+        this.fetchData()
+        this.dialogAvgVisibleTransfer = false
       })
     },
     handleSelectionChange(val) {
