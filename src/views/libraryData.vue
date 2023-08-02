@@ -366,7 +366,7 @@ export default {
       },
       timeDate: [],
       searchKey: '',
-      searchSelectId: '',
+      searchSelectId: -1,
       searchFlowerType: '',
       dialogVisibleEdit: false,
       dialogVisibleAdd: false,
@@ -383,7 +383,12 @@ export default {
         { id: 0, name: '轮转数据' }
       ],
       searchData: -1,
-      ownerList: [],
+      ownerList: [
+        {
+          ownerName: '所有人',
+          ownerId: -1
+        }
+      ],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
       tableAddForm: {
@@ -398,7 +403,7 @@ export default {
       drawer: false,
       drawerInfo: {},
       detailStatusIndex: 0,
-      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机']
+      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机', '已成交']
     }
   },
   created() {
@@ -407,10 +412,10 @@ export default {
     this.pagination = pagination
     this.fetchData()
     dataUsers({}).then(response => {
-      this.ownerList = response.data.map(item => ({
+      this.ownerList = this.ownerList.concat(response.data.map(item => ({
         ownerName: item.userCnName || '暂无中文名',
         ownerId: item.id
-      }))
+      })))
     })
   },
   methods: {
@@ -427,7 +432,7 @@ export default {
         endTime: getNowFormatDate(this.timeDate[1])
       }
 
-      if (this.searchSelectId) {
+      if (this.searchSelectId && this.searchSelectId !== -1) {
         req.userId = this.searchSelectId
       }
 

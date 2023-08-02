@@ -411,7 +411,7 @@ export default {
       drawer: false,
       drawerInfo: {},
       detailStatusIndex: 0,
-      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机']
+      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机', '已成交']
     }
   },
   created() {

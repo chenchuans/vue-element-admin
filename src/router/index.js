@@ -113,13 +113,13 @@ export const constantRoutes = [
         name: '未接通/挂断/拒接/关机',
         component: () => import('@/views/collect1'),
         meta: { title: '未接通/挂断/拒接/关机', icon: 'dashboard' }
+      },
+      {
+        path: 'index7',
+        name: '已成交',
+        component: () => import('@/views/collect1'),
+        meta: { title: '已成交', icon: 'dashboard' }
       }
-      // {
-      //   path: 'index7',
-      //   name: '苹果手机',
-      //   component: () => import('@/views/collect1'),
-      //   meta: { title: '苹果手机', icon: 'dashboard' }
-      // }
     ]
   },
 
