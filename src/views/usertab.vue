@@ -92,6 +92,10 @@ export default {
         ownerName: item.userCnName || '暂无中文名',
         ownerId: item.id
       }))
+      this.ownerList = [{
+        ownerName: '所有',
+        ownerId: '-1'
+      }].concat(this.ownerList)
       this.searchSelectId = response.data[0].id
       this.fetchData()
     })
@@ -100,11 +104,14 @@ export default {
     fetchData() {
       const endTime = getCurrentTime(this.dateTime)
       this.listLoading = true
-      usertabList({
+      const req = {
         startTime: `${endTime.slice(0, 10)} 00:00:00`,
-        endTime: `${endTime.slice(0, 10)} 23:59:59`,
-        userId: this.searchSelectId
-      }).then(response => {
+        endTime: `${endTime.slice(0, 10)} 23:59:59`
+      }
+      if (this.searchSelectId !== '-1') {
+        req.userId = this.searchSelectId
+      }
+      usertabList(req).then(response => {
         this.tableList = response.data
         this.listLoading = false
       }).catch(error => {
