@@ -3,8 +3,10 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" />
 
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
+      <el-badge style="margin-right: 20px;" :value="noticeInfo" :max="99">
+        <el-button size="small" @click="goMessage">消息未读数量</el-button>
+      </el-badge>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           {{ userName }}
@@ -24,6 +26,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { getNoticeInfo, unreadCount } from '@/api/user'
 
 export default {
   components: {
@@ -38,13 +41,46 @@ export default {
   },
   data() {
     return {
-      userName: JSON.parse(localStorage.getItem('loginInfo') || '{}').userName || '暂无用户名'
+      userName: JSON.parse(localStorage.getItem('loginInfo') || '{}').userName || '暂无用户名',
+      noticeInfo: ''
     }
+  },
+  created() {
+    setInterval(() => {
+      this.getNoticeMessage()
+      this.getUnreadCount()
+    }, 10000)
   },
   methods: {
     logout() {
       localStorage.removeItem('loginInfo')
       this.$router.push('/login')
+    },
+    getNoticeMessage() {
+      getNoticeInfo({
+        userId: JSON.parse(localStorage.getItem('loginInfo') || '{}')?.id
+      }).then(response => {
+        response.data.map(item => this.openMessage(item.content))
+      })
+    },
+    getUnreadCount() {
+      unreadCount({
+        userId: JSON.parse(localStorage.getItem('loginInfo') || '{}')?.id
+      }).then(response => {
+        this.noticeInfo = response.data
+      })
+    },
+    openMessage(message) {
+      if (!message) return
+      this.$notify.success({
+        title: '消息',
+        message,
+        duration: 5000,
+        offset: 300
+      })
+    },
+    goMessage() {
+      this.$router.push('/message/index')
     }
   }
 }
@@ -52,7 +88,8 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 60px;
+  padding-top: 10px;
   overflow: hidden;
   position: relative;
   background: #fff;

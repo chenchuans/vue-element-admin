@@ -169,3 +169,33 @@ export function usertabList(data) {
     data
   })
 }
+
+export function messageList(data) {
+  return request({
+    url: '/back/notice/list',
+    method: 'post',
+    data
+  })
+}
+
+export function unreadCount(data) {
+  return request({
+    url: '/back/notice/unreadCount',
+    method: 'post',
+    data
+  })
+}
+export function setRead(data) {
+  return request({
+    url: '/back/notice/setRead',
+    method: 'post',
+    data
+  })
+}
+export function getNoticeInfo(data) {
+  return request({
+    url: '/back/notice/getNoticeInfo',
+    method: 'post',
+    data
+  })
+}

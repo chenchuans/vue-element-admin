@@ -6,8 +6,8 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   // baseURL: 'http://123.56.23.78:80/jstime', // 线上环境
   // baseURL: 'http://jstime.durl.ga:4445/jstime', // 测试环境
-  // baseURL: 'http://192.168.10.16:8081/crm', // 本地环境
-  baseURL: 'http://47.98.216.82:8080/crm', // 本地环境
+  baseURL: 'http://192.168.10.16:8080/crm', // 本地环境
+  // baseURL: 'http://47.98.216.82:8080/crm', // 本地环境
   timeout: 40000 // request timeout
 })
 // request interceptor
@@ -54,11 +54,13 @@ service.interceptors.response.use(
     }
     const res = response.data
     const type = res.code === 200 ? 'success' : 'error'
-    Message({
-      message: res.message || 'Error',
-      type,
-      duration: 500
-    })
+    if (!response.config.url.includes('getNoticeInfo') && !response.config.url.includes('unreadCount')) {
+      Message({
+        message: res.message || 'Error',
+        type,
+        duration: 500
+      })
+    }
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;

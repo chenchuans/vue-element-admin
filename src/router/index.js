@@ -212,6 +212,20 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/message',
+    component: Layout,
+    redirect: '/message/index',
+    children: [
+      {
+        path: 'index',
+        name: '通知中心',
+        component: () => import('@/views/message'),
+        meta: { title: '通知中心', icon: 'dashboard' }
+      }
+    ]
+  },
+
   // {
   //   path: '/achieve',
   //   component: Layout,
