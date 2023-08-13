@@ -33,6 +33,11 @@
           {{ scope.row.userCnName }}
         </template>
       </el-table-column>
+       <el-table-column label="坐席号" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.agentNum }}
+        </template>
+      </el-table-column>
       <el-table-column label="用户权限" align="center">
         <template slot-scope="scope">
           {{ userMap[scope.row.userRole] }}
@@ -87,6 +92,9 @@
         </el-form-item>
         <el-form-item label="中文名">
           <el-input v-model="formInfo.userCnName" />
+        </el-form-item>
+        <el-form-item label="坐席号">
+          <el-input v-model="formInfo.agentNum" />
         </el-form-item>
         <el-form-item label="用户权限">
           <el-radio-group v-model="formInfo.userRole">
@@ -188,6 +196,7 @@ export default {
       })
     },
     handleClose() {
+      this.formInfo.agentNum = +this.formInfo.agentNum
       if (this.state === 'edit') {
         userUpdate(this.formInfo).then(response => {
           this.fetchData()

@@ -70,13 +70,13 @@ export default {
         this.noticeInfo = response.data
       })
     },
-    openMessage(message) {
+    openMessage(message) { 
       if (!message) return
       this.$notify.success({
         title: '消息',
         message,
         duration: 5000,
-        offset: 300
+        offset: 50
       })
     },
     goMessage() {

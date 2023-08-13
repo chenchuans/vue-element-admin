@@ -73,33 +73,33 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="剩余时间" width="150" align="center">
+      <el-table-column label="客户意向" width="80"  align="center">
         <template slot-scope="scope">
-          {{ scope.row.remainderTime }}
+          {{ scope.row.statusDetailString }}
         </template>
       </el-table-column>
-      <el-table-column label="最新跟进" align="center">
+      <el-table-column label="最新跟进" width="500" :show-overflow-tooltip="true"  align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="150" align="center">
+      <el-table-column label="跟进时间" width="100"  align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
       </el-table-column>
-      <el-table-column label="负责人" width="200" align="center">
+      <el-table-column label="负责人" width="80"  align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="跟进状态" width="100" align="center">
+      <el-table-column label="跟进状态" width="80"  align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="200" align="center">
+      <el-table-column class-name="status-col" label="操作" width="80" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -239,11 +239,11 @@
       direction="rtl"
       :modal="false"
     >
-      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
         :drawer-infos="drawerInfo"
+        @drawerEdit="drawerEdit"
       />
     </el-drawer>
   </div>
@@ -445,7 +445,10 @@ export default {
     handleCurrentChange(page) {
       this.pagination.page = page
       this.fetchData()
-    }
+    },
+    drawerEdit() {
+      this.handleEdit(this.drawerInfo)
+    },
   }
 }
 </script>

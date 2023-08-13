@@ -93,7 +93,7 @@ export function allDataDownload(data) {
 // 展示所有公海
 export function publicList(data) {
   return request({
-    url: '/back/clue/public/list',
+    url: '/back/clue/type/list',
     method: 'post',
     data
   })
@@ -184,6 +184,14 @@ export function clueUsers(data) {
 export function phoneAdd(data) {
   return request({
     url: '/back/followup/person/phone/add',
+    method: 'post',
+    data
+  })
+}
+
+export function waihuCall(data) {
+  return request({
+    url: '/back/call/call',
     method: 'post',
     data
   })

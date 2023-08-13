@@ -9,7 +9,7 @@
       border
       fit
       default-expand-all
-      highlight-current-row
+      ghlight-current-row
       :tree-props="{hasChildren: 'hasChildren', children: 'children' }"
     >
       <el-table-column label="部门名称" prop="deptName" width="400" />

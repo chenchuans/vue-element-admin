@@ -20,7 +20,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="姓名" align="center">
+      <el-table-column label="姓名" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.userCnName }}
         </template>

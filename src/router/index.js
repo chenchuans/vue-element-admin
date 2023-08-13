@@ -78,42 +78,42 @@ export const constantRoutes = [
       //   component: () => import('@/views/collect'),
       //   meta: { title: '所有跟进', icon: 'dashboard' },
       // },
-      {
-        path: 'index1',
-        name: 'A类数据',
-        component: () => import('@/views/collect1'),
-        meta: { title: 'A类数据', icon: 'dashboard' }
-      },
-      {
-        path: 'index2',
-        name: 'B类数据',
-        component: () => import('@/views/collect1'),
-        meta: { title: 'B类数据', icon: 'dashboard' }
-      },
-      {
-        path: 'index3',
-        name: 'C类数据',
-        component: () => import('@/views/collect1'),
-        meta: { title: 'C类数据', icon: 'dashboard' }
-      },
+      // {
+      //   path: 'index1',
+      //   name: 'A类数据',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: 'A类数据', icon: 'dashboard' }
+      // },
+      // {
+      //   path: 'index2',
+      //   name: 'B类数据',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: 'B类数据', icon: 'dashboard' }
+      // },
+      // {
+      //   path: 'index3',
+      //   name: 'C类数据',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: 'C类数据', icon: 'dashboard' }
+      // },
       {
         path: 'index4',
-        name: 'D类数据',
+        name: 'D类客户',
         component: () => import('@/views/collect1'),
-        meta: { title: 'D类数据', icon: 'dashboard' }
+        meta: { title: 'D类客户', icon: 'dashboard' }
       },
-      {
-        path: 'index5',
-        name: '停机/空号',
-        component: () => import('@/views/collect1'),
-        meta: { title: '停机/空号', icon: 'dashboard' }
-      },
-      {
-        path: 'index6',
-        name: '未接通/挂断/拒接/关机',
-        component: () => import('@/views/collect1'),
-        meta: { title: '未接通/挂断/拒接/关机', icon: 'dashboard' }
-      },
+      // {
+      //   path: 'index5',
+      //   name: '停机/空号',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: '停机/空号', icon: 'dashboard' }
+      // },
+      // {
+      //   path: 'index6',
+      //   name: '未接通/挂断/拒接/关机',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: '未接通/挂断/拒接/关机', icon: 'dashboard' }
+      // },
       {
         path: 'index7',
         name: '已成交',
@@ -126,12 +126,12 @@ export const constantRoutes = [
   {
     path: '/public',
     component: Layout,
-    redirect: '/public/index',
+    redirect: '/public/public',
     name: '数据池',
     meta: { title: '数据池', icon: 'dashboard' },
     children: [
       {
-        path: 'index',
+        path: 'public',
         name: '公海列表',
         component: () => import('@/views/public'),
         meta: { title: '公海列表', icon: 'dashboard' }
@@ -139,14 +139,14 @@ export const constantRoutes = [
       {
         path: 'all',
         name: '所有数据',
-        component: () => import('@/views/alldata'),
+        component: () => import('@/views/public'),
         meta: { title: '所有数据', icon: 'dashboard' },
         roles: ['SUPER_ADMIN']
       },
       {
         path: 'library',
         name: '在库数据',
-        component: () => import('@/views/libraryData'),
+        component: () => import('@/views/public'),
         meta: { title: '在库数据', icon: 'dashboard' }
       }
     ]

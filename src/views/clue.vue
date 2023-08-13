@@ -83,7 +83,7 @@
         width="55"
         align="center"
       />
-      <el-table-column label="姓名" align="center">
+      <el-table-column label="姓名"  width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -93,64 +93,64 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="微信号" width="150" align="center">
+      <el-table-column label="微信号" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.wxNum }}
         </template>
       </el-table-column>
-      <el-table-column label="学历" width="150" align="center">
+      <el-table-column label="学历" width="50" align="center">
         <template slot-scope="scope">
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="年龄" width="150" align="center">
+      <el-table-column label="年龄" width="50" align="center">
         <template slot-scope="scope">
           {{ scope.row.age }}
         </template>
       </el-table-column>
-      <el-table-column label="报考省份" width="150" align="center">
+      <el-table-column label="报考省份" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="城市" width="150" align="center">
+      <el-table-column label="城市" width="80"  align="center">
         <template slot-scope="scope">
           {{ scope.row.city }}
         </template>
       </el-table-column>
-      <el-table-column label="剩余时间" width="150" align="center">
+      <el-table-column label="客户意向" width="80"  align="center">
         <template slot-scope="scope">
-          {{ scope.row.remainderTime }}
+          {{ scope.row.statusDetailString }}
         </template>
       </el-table-column>
-      <el-table-column label="最新跟进" align="center">
+      <el-table-column label="最新跟进" width="500" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="150" align="center">
+      <el-table-column label="跟进时间" width="100"  align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
       </el-table-column>
-      <el-table-column label="负责人" width="200" align="center">
+      <el-table-column label="负责人" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" width="100" align="center">
+      <el-table-column label="数据类型" width="80" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
           <el-tag v-else type="info">轮转数据</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="跟进状态" width="100" align="center">
+      <el-table-column label="跟进状态" width="80" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="200" align="center">
+      <el-table-column class-name="status-col" label="操作"  width="80" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -211,7 +211,19 @@
             placeholder="请输入城市"
           />
         </el-form-item>
-        <el-form-item label="电话号">
+        <el-form-item label="身高">
+          <el-input
+            v-model="tableEditForm.height"
+            placeholder="请输入"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="体重">
+          <el-input
+            v-model="tableEditForm.weight"
+            placeholder="请输入"
+          />
+        </el-form-item> -->
+        <!-- <el-form-item label="电话号">
           <el-input v-model="tableEditForm.phone" />
         </el-form-item>
         <el-form-item label="负责人">
@@ -228,7 +240,7 @@
               :value="item.ownerId"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="跟进状态">
           <el-radio-group v-model="tableEditForm.status">
             <el-radio :label="0">未跟进</el-radio>
@@ -284,7 +296,7 @@
             placeholder="请输入城市"
           />
         </el-form-item>
-        <el-form-item label="电话号">
+        <!-- <el-form-item label="电话号">
           <el-input
             v-model="tableAddForm.phone"
             placeholder="请输入电话号"
@@ -303,7 +315,7 @@
               :label="item.ownerName"
               :value="item.ownerId"
             />
-          </el-select>
+          </el-select> -->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -443,11 +455,11 @@
       direction="rtl"
       :modal="false"
     >
-      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
         :drawer-infos="drawerInfo"
+        @drawerEdit="drawerEdit"
       />
     </el-drawer>
   </div>
@@ -696,7 +708,10 @@ export default {
     handleCurrentChange(page) {
       this.pagination.page = page
       this.fetchData()
-    }
+    },
+    drawerEdit() {
+      this.handleEdit(this.drawerInfo)
+    },
   }
 }
 </script>

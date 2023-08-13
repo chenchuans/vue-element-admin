@@ -14,6 +14,7 @@
           <el-button v-if="isAdmin2" slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
         </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogAvgVisibleTransfer = true">平均转移</el-button>
         <el-button
           v-if="isAdmin2"
           type="primary"
@@ -95,6 +96,18 @@
             :value="index"
           />
         </el-select>
+        <el-date-picker
+          v-model="timeUpdateDate"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="更新开始日期"
+          end-placeholder="更新结束日期"
+          :picker-options="pickerOptions"
+          style="margin-right: 20px"
+          @change="handleDateChange"
+        />
         <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
           <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
         </el-input>
@@ -120,27 +133,27 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="微信号" width="150" align="center">
+      <el-table-column label="微信号" width="100"  align="center">
         <template slot-scope="scope">
           {{ scope.row.wxNum }}
         </template>
       </el-table-column>
-      <el-table-column label="学历" width="150" align="center">
+      <el-table-column label="学历" width="50"  align="center">
         <template slot-scope="scope">
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="年龄" width="150" align="center">
+      <el-table-column label="年龄" width="50"  align="center">
         <template slot-scope="scope">
           {{ scope.row.age }}
         </template>
       </el-table-column>
-      <el-table-column label="报考省份" width="150" align="center">
+      <el-table-column label="报考省份" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="城市" width="150" align="center">
+      <el-table-column label="城市" width="80"  align="center">
         <template slot-scope="scope">
           {{ scope.row.city }}
         </template>
@@ -150,23 +163,33 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="最新跟进" align="center">
+      <el-table-column label="客户意向" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.statusDetailString }}
+        </template>
+      </el-table-column>
+      <el-table-column label="最新跟进" width="500" :show-overflow-tooltip="true"  align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="负责人" width="200" align="center">
+       <el-table-column label="跟进时间"  align="center">
+        <template slot-scope="scope">
+          {{ scope.row.followTime }}
+        </template>
+      </el-table-column>
+      <el-table-column label="负责人" width="80"  align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" width="100" align="center">
+      <el-table-column label="数据类型" width="80"  align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
           <el-tag v-else type="info">轮转数据</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="跟进状态" width="100" align="center">
+      <el-table-column label="跟进状态" width="80"  align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
@@ -279,6 +302,35 @@
     </el-dialog>
 
     <el-dialog
+      title="线索转移"
+      :visible.sync="dialogAvgVisibleTransfer"
+      width="600px"
+    >
+      <el-form ref="tableAvgTransForm" :model="tabAvgTransForm" label-width="80px">
+        <el-form-item label="负责人">
+          <el-select
+            v-model="tabAvgTransForm.ownerId"
+            clearable
+            filterable
+            multiple
+            placeholder="请选择负责人"
+          >
+            <el-option
+              v-for="(item, index) in ownerList"
+              :key="index"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAvgVisibleTransfer = false">取 消</el-button>
+        <el-button type="primary" @click="handleAvgVisibleTransfer">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       title="批量转移"
       :visible.sync="dialogVisibleTransfer"
       width="600px"
@@ -313,18 +365,18 @@
       direction="rtl"
       :modal="false"
     >
-      <el-button @click="handleEdit(drawerInfo)">编辑</el-button>
       <drawercontent
         v-if="drawer"
         :drawer-list="tableList"
         :drawer-infos="drawerInfo"
+        @drawerEdit="drawerEdit"
       />
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { clueAdd, publicDel, clueEdit, publicList, publicDownload, publicTrans, dataUsers } from '@/api/clue'
+import { clueAdd, publicDel, clueEdit, publicList, publicDownload, publicTrans, dataUsers, clueAvgTrans } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -407,7 +459,10 @@ export default {
       tableTransForm: {},
       tableList: [],
       listLoading: false,
+      dialogAvgVisibleTransfer: false,
+      tabAvgTransForm: {},
       timeDate: [],
+      timeUpdateDate: [],
       drawer: false,
       drawerInfo: {},
       detailStatusIndex: 0,
@@ -437,9 +492,15 @@ export default {
       const req = {
         page,
         size,
+        type: window.location.hash.split('/')[2],
         phone: this.searchKey,
         startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
+        endTime: getNowFormatDate(this.timeDate[1]),
+      }
+
+      if (this.timeUpdateDate.length > 0) {
+        req.updateStartTime = getNowFormatDate(this.timeUpdateDate[0])
+        req.updateEndTime = getNowFormatDate(this.timeUpdateDate[1])
       }
 
       if (this.searchData !== -1) {
@@ -465,6 +526,17 @@ export default {
       }).catch(error => {
         console.log(error)
         this.listLoading = false
+      })
+    },
+    handleAvgVisibleTransfer() {
+      // 批量修改跟进
+      const { ownerId } = this.tabAvgTransForm
+      clueAvgTrans({
+        id: this.multipleSelection.map(item => item.id),
+        ownerId
+      }).then(response => {
+        this.fetchData()
+        this.dialogAvgVisibleTransfer = false
       })
     },
     handleDownload() {
@@ -563,7 +635,10 @@ export default {
     },
     handleSelectDetailStatus() {
       this.fetchData()
-    }
+    },
+    drawerEdit() {
+      this.handleEdit(this.drawerInfo)
+    },
   }
 }
 </script>
