@@ -70,7 +70,7 @@ export default {
         this.noticeInfo = response.data
       })
     },
-    openMessage(message) { 
+    openMessage(message) {
       if (!message) return
       this.$notify.success({
         title: '消息',

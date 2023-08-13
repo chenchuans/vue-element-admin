@@ -83,7 +83,7 @@
         width="55"
         align="center"
       />
-      <el-table-column label="姓名"  width="80" align="center">
+      <el-table-column label="姓名" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -113,12 +113,12 @@
           {{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="城市" width="80"  align="center">
+      <el-table-column label="城市" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.city }}
         </template>
       </el-table-column>
-      <el-table-column label="客户意向" width="80"  align="center">
+      <el-table-column label="客户意向" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.statusDetailString }}
         </template>
@@ -128,7 +128,7 @@
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="100"  align="center">
+      <el-table-column label="跟进时间" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
@@ -150,7 +150,7 @@
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作"  width="80" align="center">
+      <el-table-column class-name="status-col" label="操作" width="80" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -711,7 +711,7 @@ export default {
     },
     drawerEdit() {
       this.handleEdit(this.drawerInfo)
-    },
+    }
   }
 }
 </script>

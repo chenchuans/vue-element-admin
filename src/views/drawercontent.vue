@@ -4,7 +4,7 @@
       <el-button class="drawer-button" type="primary" plain @click="handleEdit">编辑</el-button>
       <div class="drawer-title">流程走完请立刻完善客户信息</div>
     </div>
-    
+
     <el-form label-position="left" class="list" size="mini">
       <div class="drawer-item">
         <div class="left">
@@ -20,27 +20,27 @@
           <el-form-item label="学历：">
             <span>{{ drawerInfo.edu }}</span>
           </el-form-item>
-           <el-form-item v-show="!isNaN(drawerInfo.isFirstCall)" label="数据类型：">
+          <el-form-item v-show="!isNaN(drawerInfo.isFirstCall)" label="数据类型：">
             <span>{{ drawerInfo.isFirstCall === 1 ? '首咨数据' : '轮转数据' }}</span>
           </el-form-item>
         </div>
         <div class="right">
-           <el-form-item label="报考省份：">
-              <span>{{ drawerInfo.address }}</span>
-            </el-form-item>
-            <el-form-item label="城市：">
-              <span>{{ drawerInfo.city }}</span>
-            </el-form-item>
-            <el-form-item label="身高：">
-              <span>{{ drawerInfo.city }}</span>
-            </el-form-item>
-            <el-form-item label="负责人：">
-              <span>{{ drawerInfo.ownerName }}</span>
-            </el-form-item>
-            <el-form-item label="跟进状态：">
-              <span>{{ drawerInfo.status === 1 ? '已跟进' : '未跟进' }}</span>
-            </el-form-item>
-            
+          <el-form-item label="报考省份：">
+            <span>{{ drawerInfo.address }}</span>
+          </el-form-item>
+          <el-form-item label="城市：">
+            <span>{{ drawerInfo.city }}</span>
+          </el-form-item>
+          <el-form-item label="身高：">
+            <span>{{ drawerInfo.city }}</span>
+          </el-form-item>
+          <el-form-item label="负责人：">
+            <span>{{ drawerInfo.ownerName }}</span>
+          </el-form-item>
+          <el-form-item label="跟进状态：">
+            <span>{{ drawerInfo.status === 1 ? '已跟进' : '未跟进' }}</span>
+          </el-form-item>
+
         </div>
       </div>
 
@@ -55,7 +55,7 @@
       <el-button v-for="(item, index) in textList" :key="index" :loading="operateBtnLoading" type="success" @click="handleText(item, index)">{{ item }}</el-button>
     </div>
     <el-tabs v-model="activeTabName" type="card" class="tab">
-       <el-tag effect="dark" type="success">客户背景/痛点/需求/支付能力/决策人</el-tag>
+      <el-tag effect="dark" type="success">客户背景/痛点/需求/支付能力/决策人</el-tag>
       <el-tab-pane label="跟进记录" name="flower">
         <div v-show="!isShowAllButton" class="flower">
           <el-input v-model="flowerInput" type="textarea" rows="4" placeholder="请输入点击按钮确认提交" />
@@ -315,7 +315,7 @@ export default {
     handleCall() {
       // 外呼拨打
       waihuCall({
-        phone: this.drawerInfo.phone,
+        phone: this.drawerInfo.phone
       })
     },
     handleEdit() {

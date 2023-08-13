@@ -33,7 +33,7 @@
           {{ scope.row.userCnName }}
         </template>
       </el-table-column>
-       <el-table-column label="坐席号" align="center">
+      <el-table-column label="坐席号" align="center">
         <template slot-scope="scope">
           {{ scope.row.agentNum }}
         </template>

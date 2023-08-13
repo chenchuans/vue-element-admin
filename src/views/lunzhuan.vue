@@ -91,17 +91,17 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="微信号" width="100"  align="center">
+      <el-table-column label="微信号" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.wxNum }}
         </template>
       </el-table-column>
-      <el-table-column label="学历" width="50"  align="center">
+      <el-table-column label="学历" width="50" align="center">
         <template slot-scope="scope">
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="年龄" width="50"  align="center">
+      <el-table-column label="年龄" width="50" align="center">
         <template slot-scope="scope">
           {{ scope.row.age }}
         </template>
@@ -111,12 +111,12 @@
           {{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="城市" width="80"  align="center">
+      <el-table-column label="城市" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.city }}
         </template>
       </el-table-column>
-      <el-table-column label="客户意向" width="80"  align="center">
+      <el-table-column label="客户意向" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.statusDetailString }}
         </template>
@@ -126,29 +126,29 @@
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="100"  align="center">
+      <el-table-column label="跟进时间" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
       </el-table-column>
-      <el-table-column label="负责人" width="80"  align="center">
+      <el-table-column label="负责人" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" width="80"  align="center">
+      <el-table-column label="数据类型" width="80" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
           <el-tag v-else type="info">轮转数据</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="跟进状态" width="80"  align="center">
+      <el-table-column label="跟进状态" width="80" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作"  width="80" align="center">
+      <el-table-column class-name="status-col" label="操作" width="80" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -681,7 +681,7 @@ export default {
     },
     drawerEdit() {
       this.handleEdit(this.drawerInfo)
-    },
+    }
   }
 }
 </script>
