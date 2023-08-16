@@ -30,8 +30,8 @@
           align="right"
           unlink-panels
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="创建开始日期"
+          end-placeholder="创建结束日期"
           :picker-options="pickerOptions"
           style="margin-right: 20px"
           @change="handleDateChange"
