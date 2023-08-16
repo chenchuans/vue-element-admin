@@ -470,7 +470,6 @@ export default {
     }
   },
   created() {
-    this.timeDate = defaultStartEndDate()
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'SUPER_USER'
     this.isAdmin2 = userRole === 'SUPER_ADMIN'
@@ -599,7 +598,8 @@ export default {
     handleDelete() {
       // 批量删除
       publicDel({
-        ids: this.multipleSelection.map(item => item.id)
+        ids: this.multipleSelection.map(item => item.id),
+        type: window.location.hash.split('/')[2],
       }).then(response => {
         this.fetchData()
       })
@@ -610,6 +610,7 @@ export default {
       publicTrans({
         id: this.multipleSelection.map(item => item.id),
         ownerId,
+        type: window.location.hash.split('/')[2],
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName
       }).then(response => {
         this.fetchData()

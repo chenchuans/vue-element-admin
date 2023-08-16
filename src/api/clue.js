@@ -39,6 +39,14 @@ export function allDataDel(data) {
 // 删除
 export function publicDel(data) {
   return request({
+    url: '/back/clue/type/del',
+    method: 'post',
+    data
+  })
+}
+
+export function cluePublicDel(data) {
+  return request({
     url: '/back/clue/public/del',
     method: 'post',
     data
@@ -147,7 +155,7 @@ export function clueAvgTrans(data) {
 // 批量公海转移
 export function publicTrans(data) {
   return request({
-    url: '/back/clue/public/trans',
+    url: '/back/clue/type/trans',
     method: 'post',
     data
   })
@@ -165,7 +173,7 @@ export function allDataTrans(data) {
 // 数据池-负责人下拉列表
 export function dataUsers(data) {
   return request({
-    url: '/back/clue/users/all',
+    url: '/back/clue/users',
     method: 'post',
     data
   })

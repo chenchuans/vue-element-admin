@@ -96,12 +96,12 @@ export const constantRoutes = [
       //   component: () => import('@/views/collect1'),
       //   meta: { title: 'C类数据', icon: 'dashboard' }
       // },
-      {
-        path: 'index4',
-        name: 'D类客户',
-        component: () => import('@/views/collect1'),
-        meta: { title: 'D类客户', icon: 'dashboard' }
-      },
+      // {
+      //   path: 'index4',
+      //   name: 'D类客户',
+      //   component: () => import('@/views/collect1'),
+      //   meta: { title: 'D类客户', icon: 'dashboard' }
+      // },
       // {
       //   path: 'index5',
       //   name: '停机/空号',
@@ -147,7 +147,8 @@ export const constantRoutes = [
         path: 'library',
         name: '在库数据',
         component: () => import('@/views/public'),
-        meta: { title: '在库数据', icon: 'dashboard' }
+        meta: { title: '在库数据', icon: 'dashboard' },
+        roles: ['SUPER_ADMIN', 'COMMON_ADMIN']
       }
     ]
   },

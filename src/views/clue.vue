@@ -226,6 +226,7 @@
         <!-- <el-form-item label="电话号">
           <el-input v-model="tableEditForm.phone" />
         </el-form-item>
+         -->
         <el-form-item label="负责人">
           <el-select
             v-model="tableEditForm.ownerId"
@@ -240,13 +241,13 @@
               :value="item.ownerId"
             />
           </el-select>
-        </el-form-item> -->
-        <el-form-item label="跟进状态">
+        </el-form-item>
+        <!-- <el-form-item label="跟进状态">
           <el-radio-group v-model="tableEditForm.status">
             <el-radio :label="0">未跟进</el-radio>
             <el-radio :label="1">已跟进</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisibleEdit = false">取 消</el-button>
@@ -296,7 +297,7 @@
             placeholder="请输入城市"
           />
         </el-form-item>
-        <!-- <el-form-item label="电话号">
+        <el-form-item label="电话号">
           <el-input
             v-model="tableAddForm.phone"
             placeholder="请输入电话号"
@@ -315,7 +316,7 @@
               :label="item.ownerName"
               :value="item.ownerId"
             />
-          </el-select> -->
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -466,7 +467,7 @@
 </template>
 
 <script>
-import { clueAdds, clueAdd, publicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload } from '@/api/clue'
+import { clueAdds, clueAdd, cluePublicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -625,6 +626,7 @@ export default {
       })
     },
     handleAdd() {
+      console.log(444,  this.ownerList, this.tableAddForm.ownerId);
       const req = Object.assign(this.tableAddForm, {
         ownerName: this.ownerList.find(item => item.ownerId === this.tableAddForm.ownerId).ownerName,
         isFirstCall: 1
@@ -659,7 +661,7 @@ export default {
     },
     handleDelete() {
       // 批量删除
-      publicDel({
+      cluePublicDel({
         ids: this.multipleSelection.map(item => item.id)
       }).then(response => {
         this.fetchData()
