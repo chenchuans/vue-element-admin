@@ -493,13 +493,16 @@ export default {
         size,
         type: window.location.hash.split('/')[2],
         phone: this.searchKey,
-        startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
       }
 
       if (this.timeUpdateDate.length > 0) {
         req.updateStartTime = getNowFormatDate(this.timeUpdateDate[0])
         req.updateEndTime = getNowFormatDate(this.timeUpdateDate[1])
+      }
+
+      if (this.timeDate.length > 0) {
+        req.startTime = getNowFormatDate(this.timeDate[0])
+        req.endTime = getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchData !== -1) {
