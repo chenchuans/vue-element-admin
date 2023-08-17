@@ -2,8 +2,8 @@
   <div class="app-container">
     <div class="app-container-top">
       <div class="app-container-top-left">
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleAdd = true">添加</el-button>
-        <el-button v-if="!isNoAdmin" type="primary" @click="dialogVisibleUpload = true">上传</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px"  @click="dialogVisibleAdd = true">添加</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px"  @click="dialogVisibleUpload = true">上传</el-button>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="dialogVisibleAdds = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
@@ -27,8 +27,8 @@
         align="right"
         unlink-panels
         range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        start-placeholder="创建开始日期"
+        end-placeholder="创建结束日期"
         :picker-options="pickerOptions"
         style="margin-right: 8px"
         @change="handleDateChange"
@@ -64,6 +64,20 @@
           :value="item.ownerId"
         />
       </el-select>
+      <el-select
+          v-model="detailStatusIndex"
+          placeholder="请选择详细跟进状态"
+          filterable
+          style="margin-right: 8px;"
+          @change="handleSelectDetailStatus"
+        >
+          <el-option
+            v-for="(item, index) in detailStatusList"
+            :key="index"
+            :label="item"
+            :value="index"
+          />
+        </el-select>
       <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
         <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
@@ -83,74 +97,74 @@
         width="55"
         align="center"
       />
-      <el-table-column label="姓名" width="80" align="center">
+      <el-table-column label="姓名" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="电话" width="150" align="center">
+      <el-table-column label="电话" width="120"  :show-overflow-tooltip="true"align="center">
         <template slot-scope="scope">
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="微信号" width="100" align="center">
+      <el-table-column label="微信号" width="100":show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.wxNum }}
         </template>
       </el-table-column>
-      <el-table-column label="学历" width="50" align="center">
+      <el-table-column label="学历" width="50" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.edu }}
         </template>
       </el-table-column>
-      <el-table-column label="年龄" width="50" align="center">
+      <el-table-column label="年龄" width="50" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.age }}
         </template>
       </el-table-column>
-      <el-table-column label="报考省份" width="100" align="center">
+      <el-table-column label="报考省份" width="100" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="城市" width="80" align="center">
+      <el-table-column label="城市" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.city }}
         </template>
       </el-table-column>
-      <el-table-column label="客户意向" width="80" align="center">
+      <el-table-column label="客户意向" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.statusDetailString }}
         </template>
       </el-table-column>
-      <el-table-column label="最新跟进" width="500" :show-overflow-tooltip="true" align="center">
+      <el-table-column label="最新跟进" width="480" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="100" align="center">
+      <el-table-column label="跟进时间" width="155" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
       </el-table-column>
-      <el-table-column label="负责人" width="80" align="center">
+      <el-table-column label="负责人" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ownerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数据类型" width="80" align="center">
+      <el-table-column label="数据类型" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.isFirstCall === 1" type="success">首咨数据</el-tag>
           <el-tag v-else type="info">轮转数据</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="跟进状态" width="80" align="center">
+      <el-table-column label="跟进状态" width="80"  :show-overflow-tooltip="true"align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === 1" type="success">已跟进</el-tag>
           <el-tag v-else type="info">未跟进</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="80" align="center">
+      <el-table-column class-name="status-col" label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -558,11 +572,13 @@ export default {
       listLoading: false,
       timeDate: [],
       drawer: false,
-      drawerInfo: {}
+      drawerInfo: {},
+      isFirstCall: this.$route.path.includes('lunzhuan') ? 0 : 1,
+      detailStatusIndex: 0,
+      detailStatusList: ['所有', 'A类数据', 'B类数据', 'C类数据', 'D类数据', '停机/空号', '未接通/挂断/拒接/关机', '已成交']
     }
   },
   created() {
-    this.timeDate = defaultStartEndDate(30)
     const { userRole = '', pagination } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
     this.isNoAdmin = userRole === 'COMMON_USER'
     this.pagination = pagination
@@ -583,17 +599,24 @@ export default {
         page,
         size,
         phone: this.searchKey,
-        isFirstCall: 1,
-        startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
+        isFirstCall: this.isFirstCall,
       }
 
       if (this.searchSelectId) {
         req.userId = this.searchSelectId
       }
 
+      if (this.timeDate.length > 0) {
+        req.startTime = getNowFormatDate(this.timeDate[0]);
+        req.endTime = getNowFormatDate(this.timeDate[1]);
+      }
+
       if (this.searchFlowerType) {
         req.status = this.searchFlowerType
+      }
+
+      if (this.detailStatusIndex) {
+        req.statusDetail = this.detailStatusIndex
       }
 
       clueList(req).then(response => {
@@ -629,7 +652,7 @@ export default {
       console.log(444,  this.ownerList, this.tableAddForm.ownerId);
       const req = Object.assign(this.tableAddForm, {
         ownerName: this.ownerList.find(item => item.ownerId === this.tableAddForm.ownerId).ownerName,
-        isFirstCall: 1
+        isFirstCall: this.isFirstCall
       })
       clueAdds(req).then(response => {
         this.dialogVisibleAdd = false
@@ -639,7 +662,7 @@ export default {
     handleAdds() {
       const req = Object.assign(this.tableAddForms, {
         ownerName: this.ownerList.find(item => item.ownerId === this.tableAddForms.ownerId).ownerName,
-        isFirstCall: 1
+        isFirstCall: this.isFirstCall
       })
       clueAdd(req).then(response => {
         this.dialogVisibleAdds = false
@@ -711,6 +734,9 @@ export default {
       this.pagination.page = page
       this.fetchData()
     },
+    handleSelectDetailStatus() {
+      this.fetchData()
+    },
     drawerEdit() {
       this.handleEdit(this.drawerInfo)
     }
@@ -732,7 +758,8 @@ export default {
   display: flex;
   justify-content: space-between;
   justify-items: center;
-  width: 400px;
+  width: 600px;
+  height: 40px;
 }
 .input {
   width: 300px;

@@ -11,19 +11,19 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button v-if="isAdmin2" slot="reference" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
+          <el-button v-if="isAdmin2" slot="reference" type="primary" :disabled="!multipleSelection.length" style="margin-right: 10px">批量删除</el-button>
         </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
-        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogAvgVisibleTransfer = true">平均转移</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 10px" :disabled="!multipleSelection.length" @click="dialogAvgVisibleTransfer = true">平均转移</el-button>
         <el-button
           v-if="isAdmin2"
           type="primary"
-          style="margin-left: 20px"
+          style="margin-left: 10px"
           @click="handleDownload"
         >下载</el-button>
       </div>
 
-      <div>
+      <div class="aaaaaa">
         <el-date-picker
           v-model="timeDate"
           type="daterange"
@@ -654,8 +654,10 @@ export default {
 }
 .app-container-top-left {
   display: flex;
+  justify-content: space-between;
   justify-items: center;
-  width: 400px;
+  width: 600px;
+  height: 40px;
 }
 .input {
   width: 300px;
@@ -664,5 +666,8 @@ export default {
   display: flex;
   justify-content: right;
   margin-top: 20px;
+}
+.aaaaaa {
+  height: 80px;
 }
 </style>

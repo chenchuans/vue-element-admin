@@ -59,7 +59,7 @@ export const constantRoutes = [
       {
         path: 'index',
         name: '轮转数据',
-        component: () => import('@/views/lunzhuan'),
+        component: () => import('@/views/clue'),
         meta: { title: '轮转数据', icon: 'dashboard' }
       }
     ]
