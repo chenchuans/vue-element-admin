@@ -134,9 +134,9 @@
       </el-table-column>
       <el-table-column label="客户意向" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.statusDetailString === 'A类客户'" style="color: red;">{{ scope.row.statusDetailString }}</span>
-          <span v-else-if="scope.row.statusDetailString === 'B类客户'" style="color: orange;">{{ scope.row.statusDetailString }}</span>
-          <span v-else-if="scope.row.statusDetailString === 'C类客户'" style="color: green;">{{ scope.row.statusDetailString }}</span>
+          <span class="color-style" v-if="scope.row.statusDetailString === 'A类客户'" style="background: red;">{{ scope.row.statusDetailString }}</span>
+          <span class="color-style" v-else-if="scope.row.statusDetailString === 'B类客户'" style="background: orange;">{{ scope.row.statusDetailString }}</span>
+          <span class="color-style" v-else-if="scope.row.statusDetailString === 'C类客户'" style="background: green;">{{ scope.row.statusDetailString }}</span>
           <span v-else>{{ scope.row.statusDetailString }}</span>
         </template>
       </el-table-column>
@@ -771,5 +771,8 @@ export default {
   display: flex;
   justify-content: right;
   margin-top: 20px;
+}
+.color-style {
+  color: #fff;
 }
 </style>
