@@ -1,8 +1,9 @@
 <template>
   <div class="drawer">
     <div class="detail-button">
-      <el-button class="drawer-button" type="primary" plain @click="handleEdit">编辑</el-button>
-      <div class="drawer-title">流程走完请立刻完善客户信息</div>
+      <!-- <el-button class="drawer-button" type="success" plain @click="handleEdit">编辑</el-button> -->
+      <el-tag class="top-tag drawer-button" size="medium" effect="dark" type="success" @click="handleEdit">编辑</el-tag>
+      <el-tag class="top-tag" size="medium" effect="dark" type="success">流程走完请立刻完善客户信息</el-tag>
     </div>
 
     <el-form label-position="left" class="list" size="mini">
@@ -371,5 +372,8 @@ line-height: 40px;
 }
 .el-drawer__header {
   margin-bottom: 0px !important;
+}
+.top-tag {
+  margin-left: 10px;
 }
 </style>
