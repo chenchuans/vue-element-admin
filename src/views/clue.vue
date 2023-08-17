@@ -134,7 +134,10 @@
       </el-table-column>
       <el-table-column label="客户意向" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
-          {{ scope.row.statusDetailString }}
+          <span v-if="scope.row.statusDetailString === 'A类客户'" style="color: red;">{{ scope.row.statusDetailString }}</span>
+          <span v-else-if="scope.row.statusDetailString === 'B类客户'" style="color: orange;">{{ scope.row.statusDetailString }}</span>
+          <span v-else-if="scope.row.statusDetailString === 'C类客户'" style="color: green;">{{ scope.row.statusDetailString }}</span>
+          <span v-else>{{ scope.row.statusDetailString }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最新跟进" width="480" :show-overflow-tooltip="true" align="center">
