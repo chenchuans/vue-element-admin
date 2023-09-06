@@ -45,6 +45,15 @@ export function publicDel(data) {
   })
 }
 
+// 下载
+export function publicDownload(data) {
+  return request({
+    url: '/back/clue/type/download',
+    method: 'post',
+    data
+  })
+}
+
 export function cluePublicDel(data) {
   return request({
     url: '/back/clue/public/del',
@@ -81,13 +90,13 @@ export function collectList(data) {
 }
 
 // 公海下载
-export function publicDownload(data) {
-  return request({
-    url: '/back/clue/public/download',
-    method: 'post',
-    data
-  })
-}
+// export function publicDownload(data) {
+//   return request({
+//     url: '/back/clue/public/download',
+//     method: 'post',
+//     data
+//   })
+// }
 
 // 所有数据下载
 export function allDataDownload(data) {

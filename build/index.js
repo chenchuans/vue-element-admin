@@ -1,6 +1,7 @@
 const { run } = require('runjs')
 const chalk = require('chalk')
 const config = require('../vue.config.js')
+const FileManagerPlugin = require('filema nager-webpack-plugin')
 const rawArgv = process.argv.slice(2)
 const args = rawArgv.join(' ')
 

@@ -24,6 +24,9 @@
           <el-form-item v-show="!isNaN(drawerInfo.isFirstCall)" label="数据类型：">
             <span>{{ drawerInfo.isFirstCall === 1 ? '首咨数据' : '轮转数据' }}</span>
           </el-form-item>
+          <el-form-item label="客户咨询时间：">
+            <span>{{ drawerInfo.consultTime }}</span>
+          </el-form-item>
         </div>
         <div class="right">
           <el-form-item label="报考省份：">
@@ -33,7 +36,7 @@
             <span>{{ drawerInfo.city }}</span>
           </el-form-item>
           <el-form-item label="身高：">
-            <span>{{ drawerInfo.city }}</span>
+            <span>{{ drawerInfo.height }}</span>
           </el-form-item>
           <el-form-item label="负责人：">
             <span>{{ drawerInfo.ownerName }}</span>

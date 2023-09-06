@@ -30,8 +30,8 @@
           align="right"
           unlink-panels
           range-separator="至"
-          start-placeholder="创建开始日期"
-          end-placeholder="创建结束日期"
+          start-placeholder="咨询开始日期"
+          end-placeholder="咨询结束日期"
           :picker-options="pickerOptions"
           style="margin-right: 20px"
           @change="handleDateChange"
@@ -102,8 +102,8 @@
           align="right"
           unlink-panels
           range-separator="至"
-          start-placeholder="更新开始日期"
-          end-placeholder="更新结束日期"
+          start-placeholder="跟进开始日期"
+          end-placeholder="跟进结束日期"
           :picker-options="pickerOptions"
           style="margin-right: 20px"
           @change="handleDateChange"
@@ -128,7 +128,8 @@
         width="55"
         align="center"
       />
-      <el-table-column label="名称" align="center" :show-overflow-tooltip="true">
+      <el-table-column label="客户咨询时间" width="110" prop="consultTime"  :show-overflow-tooltip="true" align="center"/>
+      <el-table-column label="姓名" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -547,11 +548,20 @@ export default {
         page,
         size,
         phone: this.searchKey,
-        startTime: getNowFormatDate(this.timeDate[0]),
-        endTime: getNowFormatDate(this.timeDate[1])
+        type: window.location.hash.split('/')[2],
       }
       if (this.searchSelectId) {
         req.userId = this.searchSelectId
+      }
+
+      if (this.timeUpdateDate.length > 0) {
+        req.updateStartTime = getNowFormatDate(this.timeUpdateDate[0])
+        req.updateEndTime = getNowFormatDate(this.timeUpdateDate[1])
+      }
+
+      if (this.timeDate.length > 0) {
+        req.startTime = getNowFormatDate(this.timeDate[0])
+        req.endTime = getNowFormatDate(this.timeDate[1])
       }
 
       if (this.searchFlowerType) {
@@ -651,6 +661,7 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  height: 120px;
 }
 .app-container-top-left {
   display: flex;

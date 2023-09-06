@@ -1,6 +1,10 @@
 <template>
   <div class="app-container">
-    <div class="app-container-top" />
+    <div class="app-container-top">
+      <div class="app-container-top-left">
+        <el-button type="primary" style="margin-left: 20px"  @click="handleAllRead">一键已读</el-button>
+      </div>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="tableList"
@@ -29,7 +33,7 @@
 </template>
 
 <script>
-import { messageList, setRead } from '@/api/user'
+import { messageList, setRead, setAllRead } from '@/api/user'
 
 export default {
   data() {
@@ -60,6 +64,13 @@ export default {
       setRead({
         userId: JSON.parse(window.localStorage.loginInfo).id,
         noticeId: row.id
+      }).then(response => {
+        this.fetchData()
+      })
+    },
+    handleAllRead() {
+      setAllRead({
+        userId: JSON.parse(window.localStorage.loginInfo).id,
       }).then(response => {
         this.fetchData()
       })

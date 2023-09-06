@@ -4,6 +4,7 @@
       <div class="app-container-top-left">
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px"  @click="dialogVisibleAdd = true">添加</el-button>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px"  @click="dialogVisibleUpload = true">上传</el-button>
+        <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="handleDownload">下载</el-button>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="dialogVisibleAdds = true">批量添加</el-button>
         <el-popconfirm
           confirm-button-text="好的"
@@ -27,8 +28,8 @@
         align="right"
         unlink-panels
         range-separator="至"
-        start-placeholder="创建开始日期"
-        end-placeholder="创建结束日期"
+        start-placeholder="咨询开始日期"
+        end-placeholder="咨询结束日期"
         :picker-options="pickerOptions"
         style="margin-right: 8px"
         @change="handleDateChange"
@@ -78,6 +79,18 @@
             :value="index"
           />
         </el-select>
+        <el-date-picker
+          v-model="timeUpdateDate"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="跟进开始日期"
+          end-placeholder="跟进结束日期"
+          :picker-options="pickerOptions"
+          style="margin-right: 20px"
+          @change="handleDateChange"
+        />
       <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
         <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
@@ -97,6 +110,7 @@
         width="55"
         align="center"
       />
+      <el-table-column label="客户咨询时间"  :show-overflow-tooltip="true" width="110" prop="consultTime" align="center"/>
       <el-table-column label="姓名" width="80" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
@@ -195,6 +209,14 @@
       width="600px"
     >
       <el-form ref="form" :model="tableEditForm" label-width="80px">
+        <el-form-item label="咨询时间">
+          <el-date-picker
+            v-model="tableEditForm.consultTime"
+            type="datetime"
+            :clearable="false"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="tableEditForm.name" />
         </el-form-item>
@@ -278,6 +300,14 @@
       width="600px"
     >
       <el-form ref="tableAddForm" :model="tableAddForm" label-width="100px">
+        <el-form-item label="咨询时间">
+          <el-date-picker
+            v-model="tableAddForm.consultTime"
+            type="datetime"
+            :clearable="false"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
         <el-form-item label="姓名前缀">
           <el-input
             v-model="tableAddForm.name"
@@ -484,9 +514,9 @@
 </template>
 
 <script>
-import { clueAdds, clueAdd, cluePublicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload } from '@/api/clue'
+import { clueAdds, clueAdd, cluePublicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload, publicDownload } from '@/api/clue'
 import drawercontent from './drawercontent'
-import { getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
+import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
 export default {
   components: {
@@ -546,6 +576,7 @@ export default {
       dialogVisibleTransfer: false,
       dialogAvgVisibleTransfer: false,
       dialogVisibleUpload: false,
+      timeUpdateDate: [],
       pagination: {
         page: 1,
         size: 50,
@@ -614,6 +645,11 @@ export default {
         req.endTime = getNowFormatDate(this.timeDate[1]);
       }
 
+      if (this.timeUpdateDate.length > 0) {
+        req.updateStartTime = getNowFormatDate(this.timeUpdateDate[0])
+        req.updateEndTime = getNowFormatDate(this.timeUpdateDate[1])
+      }
+
       if (this.searchFlowerType) {
         req.status = this.searchFlowerType
       }
@@ -652,7 +688,6 @@ export default {
       })
     },
     handleAdd() {
-      console.log(444,  this.ownerList, this.tableAddForm.ownerId);
       const req = Object.assign(this.tableAddForm, {
         ownerName: this.ownerList.find(item => item.ownerId === this.tableAddForm.ownerId).ownerName,
         isFirstCall: this.isFirstCall
@@ -679,7 +714,7 @@ export default {
       const formData = new FormData()
       formData.append('file', this.uploadFile)
       const ownerName = this.ownerList.find(item => item.ownerId === this.tableAddForms.ownerId).ownerName
-      const paramsUrl = `ownerName=${ownerName}&isFirstCall=1&ownerId=
+      const paramsUrl = `ownerName=${ownerName}&isFirstCall=${this.isFirstCall}&ownerId=
         ${this.tableAddForms.ownerId}`
       upload(formData, paramsUrl).then(response => {
         this.dialogVisibleUpload = false
@@ -714,6 +749,40 @@ export default {
       }).then(response => {
         this.fetchData()
         this.dialogAvgVisibleTransfer = false
+      })
+    },
+    handleDownload() {
+       const { page, size } = this.pagination
+       const { id = '' } = JSON.parse(localStorage.getItem('loginInfo') || '{}')
+
+      const req = {
+        page,
+        size,
+        userId: id,
+        type: 'library',
+        phone: this.searchKey,
+        isFirstCall: this.isFirstCall,
+      }
+
+      if (this.searchSelectId) {
+        req.userId = this.searchSelectId
+      }
+
+      if (this.timeDate.length > 0) {
+        req.startTime = getNowFormatDate(this.timeDate[0]);
+        req.endTime = getNowFormatDate(this.timeDate[1]);
+      }
+
+      if (this.timeUpdateDate.length > 0) {
+        req.updateStartTime = getNowFormatDate(this.timeUpdateDate[0])
+        req.updateEndTime = getNowFormatDate(this.timeUpdateDate[1])
+      }
+
+      if (this.searchFlowerType) {
+        req.status = this.searchFlowerType
+      }
+      publicDownload(req).then(response => {
+        download(response, '首咨')
       })
     },
     handleSelectionChange(val) {

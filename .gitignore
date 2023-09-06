@@ -2,6 +2,7 @@
 node_modules/
 dist/
 admin/
+8080/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -192,6 +192,15 @@ export function setRead(data) {
     data
   })
 }
+
+export function setAllRead(data) {
+  return request({
+    url: '/back/notice/setAllRead',
+    method: 'post',
+    data
+  })
+}
+
 export function getNoticeInfo(data) {
   return request({
     url: '/back/notice/getNoticeInfo',

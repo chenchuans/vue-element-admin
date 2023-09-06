@@ -49,7 +49,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="姓名" prop="userCnName" />
+      <el-table-column label="客户咨询时间" width="110"  :show-overflow-tooltip="true"  prop="consultTime" align="center"/>
       <el-table-column label="时间" prop="currentDay" />
       <el-table-column label="今日单量" width="240" align="center">
         <template slot-scope="scope">
