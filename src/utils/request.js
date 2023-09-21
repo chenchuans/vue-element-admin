@@ -7,6 +7,7 @@ const service = axios.create({
   // baseURL: 'http://123.56.23.78:80/jstime', // 线上环境
   // baseURL: 'http://jstime.durl.ga:4445/jstime', // 测试环境
   // baseURL: 'http://localhost:8080/crm', // 本地环境
+  // baseURL: 'http://192.168.10.15:8080/crm', // 本地环境
   baseURL: 'http://47.98.216.82:8080/crm', // online环境
   timeout: 40000 // request timeo ut
 })

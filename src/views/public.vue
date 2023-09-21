@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="app-container-top">
-      <div class="app-container-top-left">
+       <div class="app-container-top-left">
         <!-- <el-button type="primary" v-if="!isNoAdmin" @click="dialogVisibleAdd = true">批量添加</el-button> -->
         <el-popconfirm
           confirm-button-text="好的"
@@ -21,7 +20,14 @@
           style="margin-left: 10px"
           @click="handleDownload"
         >下载</el-button>
+        <el-button
+          type="primary"
+          style="margin-left: 10px"
+          @click="handleClearSort"
+        >清空排序</el-button>
+        
       </div>
+    <div class="app-container-top">
 
       <div class="aaaaaa">
         <el-date-picker
@@ -119,9 +125,11 @@
       element-loading-text="Loading"
       border
       fit
+      ref="tableList"
       highlight-current-row
       @selection-change="handleSelectionChange"
       @cell-click="rowClick"
+      @sort-change="handleSortChange"
     >
       <el-table-column
         type="selection"
@@ -164,7 +172,7 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column label="客户意向" align="center" :show-overflow-tooltip="true">
+      <el-table-column label="意向" sortable="custom" prop="statusDetail" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           {{ scope.row.statusDetailString }}
         </template>
@@ -174,7 +182,7 @@
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="155" align="center">
+      <el-table-column label="跟进时间" sortable="custom" prop="updateTime" width="155" align="center">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
@@ -307,7 +315,7 @@
       :visible.sync="dialogAvgVisibleTransfer"
       width="600px"
     >
-      <el-form ref="tableAvgTransForm" :model="tabAvgTransForm" label-width="80px">
+      <el-form ref="tableAvgTransForm" :model="tabAvgTransForm" label-width="120px">
         <el-form-item label="负责人">
           <el-select
             v-model="tabAvgTransForm.ownerId"
@@ -324,6 +332,27 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-show="isLibrary" label="转换数据类型">
+          <el-select
+            v-model="tabAvgTransForm.isFirstCall"
+            clearable
+            filterable
+            placeholder="请选择数据类型"
+          >
+            <el-option
+              label="原类型"
+              :value="-1"
+            />
+            <el-option
+              label="首咨数据"
+              :value="1"
+            />
+            <el-option
+              label="轮转数据"
+              :value="0"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogAvgVisibleTransfer = false">取 消</el-button>
@@ -336,7 +365,7 @@
       :visible.sync="dialogVisibleTransfer"
       width="600px"
     >
-      <el-form ref="tableTransForm" :model="tableTransForm" label-width="80px">
+      <el-form ref="tableTransForm" :model="tableTransForm" label-width="120px">
         <el-form-item label="负责人">
           <el-select
             v-model="tableTransForm.ownerId"
@@ -349,6 +378,27 @@
               :key="index"
               :label="item.ownerName"
               :value="item.ownerId"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item  v-show="isLibrary" label="转换数据类型">
+          <el-select
+            v-model="tableTransForm.isFirstCall"
+            clearable
+            filterable
+            placeholder="请选择数据类型"
+          >
+            <el-option
+              label="原类型"
+              :value="-1"
+            />
+            <el-option
+              label="首咨数据"
+              :value="1"
+            />
+            <el-option
+              label="轮转数据"
+              :value="0"
             />
           </el-select>
         </el-form-item>
@@ -443,10 +493,17 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
+      isLibrary: this.$route.path.includes('library'),
       dataTypeList: [
         { id: -1, name: '所有' },
         { id: 1, name: '首咨数据' },
-        { id: 0, name: '轮转数据' }
+        { id: 0, name: '轮转数据' },
+        { id: 101, name: '1天未跟进-首咨数据' },
+        { id: 102, name: '2天未跟进-首咨数据' },
+        { id: 103, name: '3天未跟进-首咨数据' },
+        { id: 111, name: '1天未跟进-轮转数据' },
+        { id: 112, name: '2天未跟进-轮转数据' },
+        { id: 113, name: '3天未跟进-轮转数据' }
       ],
       searchData: -1,
       ownerList: [],
@@ -457,11 +514,15 @@ export default {
         ownerName: '',
         name: ''
       },
-      tableTransForm: {},
+      tableTransForm: {
+        isFirstCall: -1,
+      },
       tableList: [],
       listLoading: false,
       dialogAvgVisibleTransfer: false,
-      tabAvgTransForm: {},
+      tabAvgTransForm: {
+        isFirstCall: -1,
+      },
       timeDate: [],
       timeUpdateDate: [],
       drawer: false,
@@ -484,7 +545,7 @@ export default {
     })
   },
   methods: {
-    fetchData() {
+    fetchData(orderName, orderType) {
       this.listLoading = true
       const { pagination } = this
       const { page, size } = pagination
@@ -494,6 +555,11 @@ export default {
         size,
         type: window.location.hash.split('/')[2],
         phone: this.searchKey,
+      }
+
+       if (orderName && orderType) {
+        req.orderName = orderName
+        req.orderType = orderType
       }
 
       if (this.timeUpdateDate.length > 0) {
@@ -531,13 +597,24 @@ export default {
         this.listLoading = false
       })
     },
+    handleClearSort() {
+      this.$refs.tableList.clearSort();
+      this.fetchData();
+    },
+    handleSortChange({column, prop, order}) {
+      this.fetchData(prop, order);
+    },
     handleAvgVisibleTransfer() {
       // 批量修改跟进
       const { ownerId } = this.tabAvgTransForm
-      clueAvgTrans({
+      const req = {
         id: this.multipleSelection.map(item => item.id),
         ownerId
-      }).then(response => {
+      }
+       if (this.tabAvgTransForm.isFirstCall !== -1) {
+        req.isFirstCall = this.tabAvgTransForm.isFirstCall
+      }
+      clueAvgTrans(req).then(response => {
         this.fetchData()
         this.dialogAvgVisibleTransfer = false
       })
@@ -620,12 +697,17 @@ export default {
     handleTransfer() {
       // 批量修改跟进
       const { ownerId } = this.tableTransForm
-      publicTrans({
+
+      const req = {
         id: this.multipleSelection.map(item => item.id),
         ownerId,
         type: window.location.hash.split('/')[2],
         ownerName: this.ownerList.find(item => item.ownerId === ownerId).ownerName
-      }).then(response => {
+      }
+      if (this.tableTransForm.isFirstCall !== -1) {
+        req.isFirstCall = this.tableTransForm.isFirstCall
+      }
+      publicTrans(req).then(response => {
         this.fetchData()
         this.dialogVisibleTransfer = false
       })
@@ -660,11 +742,11 @@ export default {
 .app-container-top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
   height: 120px;
 }
 .app-container-top-left {
   display: flex;
+  margin: 10px;
   justify-content: space-between;
   justify-items: center;
   width: 600px;

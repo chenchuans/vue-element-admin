@@ -19,6 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <audio id="ringtone" src="./y1953.mp3" preload="auto"></audio>
   </div>
 </template>
 
@@ -60,7 +61,12 @@ export default {
       getNoticeInfo({
         userId: JSON.parse(localStorage.getItem('loginInfo') || '{}')?.id
       }).then(response => {
+        if (response.data.length) {
+          const ringtone = document.getElementById('ringtone');
+          ringtone.play();
+        }
         response.data.map(item => this.openMessage(item.content))
+
       })
     },
     getUnreadCount() {

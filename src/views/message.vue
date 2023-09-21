@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
     <div class="app-container-top">
-      <div class="app-container-top-left">
-        <el-button type="primary" style="margin-left: 20px"  @click="handleAllRead">一键已读</el-button>
-      </div>
+      <el-button type="primary"  @click="handleAllRead">一键已读</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -81,14 +79,10 @@ export default {
 <style lang="scss" scoped>
 .app-container-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 20px;
 }
-.app-container-top-left {
-  display: flex;
-  justify-content: space-between;
-  width: 400px;
-}
+
 .input {
   width: 300px;
 }

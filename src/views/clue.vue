@@ -6,6 +6,7 @@
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px"  @click="dialogVisibleUpload = true">上传</el-button>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="handleDownload">下载</el-button>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" @click="dialogVisibleAdds = true">批量添加</el-button>
+        <el-button v-if="isFirstCall === 0" type="primary" style="margin-left: 20px" @click="handleFangqi" :disabled="!multipleSelection.length">放弃</el-button>
         <el-popconfirm
           confirm-button-text="好的"
           cancel-button-text="不用了"
@@ -14,11 +15,17 @@
           title="确认要删除吗？"
           @onConfirm="handleDelete"
         >
-          <el-button slot="reference" style="margin-left: 20px" type="primary" :disabled="!multipleSelection.length">批量删除</el-button>
+          <el-button slot="reference" style="margin-left: 20px" type="primary"
+           v-if="!isNoAdmin" :disabled="!multipleSelection.length">批量删除</el-button>
         </el-popconfirm>
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogVisibleTransfer = true">批量转移</el-button>
 
         <el-button v-if="!isNoAdmin" type="primary" style="margin-left: 20px" :disabled="!multipleSelection.length" @click="dialogAvgVisibleTransfer = true">平均转移</el-button>
+         <el-button
+          type="primary"
+          style="margin-left: 10px"
+          @click="handleClearSort"
+        >清空排序</el-button>
       </div>
     </div>
     <div style="margin-bottom: 20px">
@@ -50,6 +57,21 @@
           value="0"
         />
       </el-select>
+       <el-select
+          v-model="searchData"
+          placeholder="请选择"
+          filterable
+          clearable
+          style="margin-right: 8px;"
+          @change="handleChangeData"
+        >
+          <el-option
+            v-for="(item, index) in dataTypeList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       <el-select
         v-model="searchSelectId"
         placeholder="请选择负责人"
@@ -79,7 +101,7 @@
             :value="index"
           />
         </el-select>
-        <el-date-picker
+        <!-- <el-date-picker
           v-model="timeUpdateDate"
           type="daterange"
           align="right"
@@ -90,7 +112,7 @@
           :picker-options="pickerOptions"
           style="margin-right: 20px"
           @change="handleDateChange"
-        />
+        /> -->
       <el-input v-model="searchKey" class="input" placeholder="请输入搜索内容" clearable>
         <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
       </el-input>
@@ -101,8 +123,10 @@
       element-loading-text="Loading"
       border
       fit
+      ref="tableList"
       highlight-current-row
       @selection-change="handleSelectionChange"
+      @sort-change="handleSortChange"
       @cell-click="rowClick"
     >
       <el-table-column
@@ -146,7 +170,7 @@
           {{ scope.row.city }}
         </template>
       </el-table-column>
-      <el-table-column label="客户意向" width="80" :show-overflow-tooltip="true" align="center">
+      <el-table-column label="意向" sortable="custom" width="80" :show-overflow-tooltip="true" align="center" prop="statusDetail">
         <template slot-scope="scope">
           <span class="color-style" v-if="scope.row.statusDetailString === 'A类客户'" style="background: red;">{{ scope.row.statusDetailString }}</span>
           <span class="color-style" v-else-if="scope.row.statusDetailString === 'B类客户'" style="background: orange;">{{ scope.row.statusDetailString }}</span>
@@ -159,7 +183,7 @@
           {{ scope.row.followUpContent }}
         </template>
       </el-table-column>
-      <el-table-column label="跟进时间" width="155" :show-overflow-tooltip="true" align="center">
+      <el-table-column label="跟进时间" sortable="custom" width="155" :show-overflow-tooltip="true" align="center" prop="updateTime">
         <template slot-scope="scope">
           {{ scope.row.followTime }}
         </template>
@@ -508,13 +532,14 @@
         :drawer-list="tableList"
         :drawer-infos="drawerInfo"
         @drawerEdit="drawerEdit"
+        @draweClose="draweClose"
       />
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { clueAdds, clueAdd, cluePublicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload, publicDownload } from '@/api/clue'
+import { clueAdds, clueAdd, clueDel, cluePublicDel, clueEdit, clueList, clueTrans, clueUsers, phoneAdd, clueAvgTrans, upload, publicDownload } from '@/api/clue'
 import drawercontent from './drawercontent'
 import { download, getNowFormatDate, defaultStartEndDate } from '@/utils/tool'
 
@@ -583,6 +608,12 @@ export default {
         total: 0,
         sizes: [20, 50, 100]
       },
+      searchData: -1,
+      dataTypeList: [
+        { id: -1, name: '所有' },
+        { id: 101, name: '1天未跟进' },
+        { id: 102, name: '2天未跟进' },
+      ],
       ownerList: [],
       multipleSelection: [], // 多选选中的项
       tableEditForm: {},
@@ -625,7 +656,7 @@ export default {
     })
   },
   methods: {
-    fetchData() {
+    fetchData(orderName, orderType) {
       this.listLoading = true
       const { page, size } = this.pagination
 
@@ -638,6 +669,14 @@ export default {
 
       if (this.searchSelectId) {
         req.userId = this.searchSelectId
+      }
+      if (this.searchData !== -1) {
+        req.unFollow = this.searchData
+      }
+
+      if (orderName && orderType) {
+        req.orderName = orderName
+        req.orderType = orderType
       }
 
       if (this.timeDate.length > 0) {
@@ -667,10 +706,20 @@ export default {
         this.listLoading = false
       })
     },
+    handleClearSort() {
+      this.$refs.tableList.clearSort();
+      this.fetchData();
+    },
+    handleSortChange({column, prop, order}) {
+      this.fetchData(prop, order);
+    },
     handleDateChange() {
       this.fetchData()
     },
     handleSearch() {
+      this.fetchData()
+    },
+     handleChangeData() {
       this.fetchData()
     },
     handleEdit(row) {
@@ -738,6 +787,14 @@ export default {
       }).then(response => {
         this.fetchData()
         this.dialogVisibleTransfer = false
+      })
+    },
+    handleFangqi() {
+      // 批量放弃
+      clueDel({
+        ids: this.multipleSelection.map(item => item.id),
+      }).then(response => {
+        this.fetchData()
       })
     },
     handleAvgVisibleTransfer() {
@@ -811,7 +868,11 @@ export default {
     },
     drawerEdit() {
       this.handleEdit(this.drawerInfo)
-    }
+    },
+    draweClose() {
+      this.drawer = false
+      this.fetchData()
+    },
   }
 }
 </script>

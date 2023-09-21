@@ -53,6 +53,7 @@
         <el-button v-show="!isShowAllButton" type="primary" size="large" style="margin-right: 30px" @click="handleCopy">复制</el-button>
         <el-button v-show="!isShowAllButton" type="primary" size="large" @click="handlePhone">手机拨打</el-button>
         <el-button type="primary" size="large" @click="handleCall">系统拨打</el-button>
+          <el-button v-if="drawerInfo.isFirstCall === 0" type="danger" style="margin-left: 20px" size="large" @click="handleFangqi">放弃</el-button>
       </el-form-item>
     </el-form>
     <div class="flower-btn1">
@@ -139,7 +140,7 @@
 
 <script>
 import { opList, followupList, followupAdd, followupEdit, followupDel, addCollect, cancelCollect } from '@/api/cluedetail'
-import { phoneAdd, clueEdit, waihuCall } from '@/api/clue'
+import { phoneAdd, clueEdit, waihuCall, clueDel } from '@/api/clue'
 
 export default {
   props: {
@@ -298,6 +299,14 @@ export default {
           this.fetchData()
         })
       }
+    },
+    handleFangqi() {
+      // 批量放弃
+      clueDel({
+        ids: [this.drawerInfo.id],
+      }).then(response => {
+         this.$emit('draweClose')
+      })
     },
     async handleText(text, index) {
       this.btnText = '增加跟进记录'
